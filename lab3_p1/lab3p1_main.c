@@ -370,7 +370,7 @@ bool check_bit(uint16_t reg_value,uint16_t bit_mask)
 }
 
 
-
+//-------------------------------------------------------------
 // buffer: A format string used to format the integer value. It follows the format specifiers used by 'sprintf'.
 // value: The integer value to be formatted and included in the formatted string.
 //

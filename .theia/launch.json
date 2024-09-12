@@ -6,6 +6,12 @@
             "type": "ccs-debug",
             "request": "launch",
             "project": "lab3_p1"
+        },
+        {
+            "name": "lab3_p2",
+            "type": "ccs-debug",
+            "request": "launch",
+            "project": "lab3_p2"
         }
     ]
 }
