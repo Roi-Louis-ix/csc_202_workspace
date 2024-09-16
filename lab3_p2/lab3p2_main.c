@@ -31,6 +31,9 @@
 //-----------------------------------------------------------------------------
 // Loads standard C include files
 //-----------------------------------------------------------------------------
+#include <stdio.h>
+#include <stdint.h>
+#include <stdbool.h>
 
 //-----------------------------------------------------------------------------
 // Loads MSP launchpad board support macros and definitions
@@ -43,7 +46,33 @@
 //-----------------------------------------------------------
 // Define function prototypes used by the program
 //-----------------------------------------------------------
+//*****************************************************************************
+// msp_printf: Prints an integer value in a specific format.
+// INPUT PARAMETERS:
+// buffer: A format string used to format the integer value. It follows the 
+// format specifiers used by 'sprintf'.
+// value: The integer value to be formatted and included in the formatted
+// string.
+// 
+//
+// OUTPUT PARAMETERS:
+// none
+//
+//RETURN:
+// String with integer values added.
+//*****************************************************************************
 void msp_printf(char* buffer, unsigned int value);
+
+//*****************************************************************************
+// Bitwise set, clear, and check functions.
+// INPUT PARAMETERS:
+// reg-value: 16-bit integer
+// bit-mask: 16-bit mask
+//
+// RETURN: revised reg_value with mask bits set or cleared. my_asm_16bitcheck
+// returns 1 if the checked bit is set.
+// Operates in lab3_p2.s
+//*****************************************************************************
 uint16_t my_asm_16bitset(uint16_t reg_value, uint16_t bit_mask);
 uint16_t my_asm_16bitclr(uint16_t reg_value, uint16_t bit_mask);
 uint16_t my_asm_16bitcheck(uint16_t reg_value, uint16_t bit_mask);
@@ -72,10 +101,6 @@ uint16_t my_asm_16bitcheck(uint16_t reg_value, uint16_t bit_mask);
 //-----------------------------------------------------------------------------
 // Define global variable and structures here.
 
-.global my_asm_16bitset
-.global my_asm_16bitclr
-.global my_asm_16bitclr
-
 // NOTE: when possible avoid using global variables
 //-----------------------------------------------------------------------------
 
@@ -86,6 +111,7 @@ int main(void)
 {
   // create local variable to hold register value
   uint16_t reg_value;
+  reg_value =
   
   clock_init_40mhz();
   UART_init(115200);
@@ -109,6 +135,8 @@ int main(void)
 
   // enter your code here for problem 1
   reg_value = test_reg16;
+  reg_value = my_asm_16bitset(reg_value, PIE_BIT_MASK);
+  test_reg16 = reg_value;
 
   msp_printf("    --> Test reg = 0x%04X\r\n", test_reg16);
   msp_printf("\r\n",0);;
@@ -121,6 +149,8 @@ int main(void)
 
   // enter your code here for problem 2
   reg_value = test_reg16;
+  reg_value = my_asm_16bitset(reg_value, RD_BIT_MASK);
+  test_reg16 = reg_value;
 
   msp_printf("    --> Test reg = 0x%04X\r\n", test_reg16);
   msp_printf("\r\n",0);;
@@ -133,6 +163,8 @@ int main(void)
 
   // enter your code here for problem 3
   reg_value = test_reg16;
+  reg_value = my_asm_16bitset(reg_value, CRS_BIT_MASK);
+  test_reg16 = reg_value;
 
   msp_printf("    --> Test reg = 0x%04X\r\n", test_reg16);
   msp_printf("\r\n",0);;
@@ -145,6 +177,8 @@ int main(void)
 
   // enter your code here for problem 4
   reg_value = test_reg16;
+  reg_value = my_asm_16bitset(reg_value, A0_BIT_MASK | A1_BIT_MASK | A2_BIT_MASK | A3_BIT_MASK);
+  test_reg16 = reg_value;
 
   msp_printf("    --> Test reg = 0x%04X\r\n", test_reg16);
   msp_printf("\r\n",0);;
@@ -159,6 +193,14 @@ int main(void)
 
   // enter your code here for problem 5
   reg_value = test_reg16;
+  if(my_asm_16bitcheck(reg_value, A2_BIT_MASK))
+  {
+    msp_printf("Bit A2 is 1\r\n", 0);
+  }
+  else 
+  {
+    msp_printf("Bit A2 is 0\r\n", 0);
+  }
 
   msp_printf("\r\n",0);;
 
@@ -170,6 +212,8 @@ int main(void)
 
   // enter your code here for problem 6
   reg_value = test_reg16;
+  reg_value = my_asm_16bitclr(reg_value, A2_BIT_MASK);
+  test_reg16 = reg_value;
 
   msp_printf("    --> Test reg = 0x%04X\r\n", test_reg16);
   msp_printf("\r\n",0);;
@@ -182,6 +226,9 @@ int main(void)
 
   // enter your code here for problem 7
   reg_value = test_reg16;
+  reg_value = my_asm_16bitclear(reg_value, CRS_BIT_MASK);
+  reg_value = my_asm_16bitset(reg_value, PRS_BIT_MASK);
+  test_reg16 = reg_value;
 
   msp_printf("    --> Test reg = 0x%04X\r\n", test_reg16);
   msp_printf("\r\n",0);;
@@ -200,6 +247,18 @@ int main(void)
 
   // enter your code here for problem 8
   reg_value = test_reg16;
+  if(my_asm_16bitcheck(reg_value, A2_BIT_MASK))
+  {
+    msp_printf("Bit A2=1 so clearing it\r\n", 0);
+    reg_value = my_asm_16bitclear(reg_value, A2_BIT_MASK);
+    test_reg16 = reg_value;
+  }
+  else 
+  {
+    msp_printf("Bit A2=0 so setting it\r\n", 0);
+    reg_value = my_asm_16bitset(reg_value, A2_BIT_MASK);
+    test_reg16 = reg_value;
+  }
 
   msp_printf("    --> Test reg = 0x%04X\r\n", test_reg16);
   msp_printf("\r\n",0);;
@@ -218,6 +277,19 @@ int main(void)
 
   // enter your code here for problem 9
   reg_value = test_reg16;
+  if(my_asm_16bitcheck(reg_value, MD_BIT_MASK))
+  {
+    msp_printf("Bit MD=0, setting mode=10\r\n", 0);
+    reg_value = my_asm_16bitset(reg_value, MODE_10_BIT_VALUE);
+    reg_value = my_asm_16bitclr(reg_value, MODE_01_BIT_VALUE);
+    test_reg16 = reg_value;
+  }
+  else
+  {
+    msp_printf("Bit MD=1, setting mode=11\r\n", 0);
+    reg_value = my_asm_16bitset(reg_value, MODE_BIT_MASK);
+    test_reg16 = reg_value;
+  }
 
   msp_printf("    --> Test reg = 0x%04X\r\n", test_reg16);
   msp_printf("\r\n",0);;
@@ -230,6 +302,8 @@ int main(void)
 
   // enter your code here for problem 1
   reg_value = test_reg16;
+  reg_value = my_asm_16bitclear(reg_value, 0xFFFF);
+  test_reg16 = reg_value;
 
   msp_printf("    --> Test reg = 0x%04X\r\n", test_reg16);
   msp_printf("\r\n",0);;
