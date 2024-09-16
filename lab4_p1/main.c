@@ -108,13 +108,26 @@ int main(void)
   GPIOB->DOUT31_0 |= GPIO_DOUT31_0_DIO13_MASK;
   for(uint8_1 loop_cntr = 0; loop_cntr < 10; loop_cntr++)
   {
-    GPIOA->DOUT31_0 |= GPIO_DOUT31_0_DIO0_MASK;
-    msec_delay(500);
-
+    GPIOA->DOUT31_0 |= GPIO_DOUT31_0_DIO28_MASK;
+    msec_delay(200);
+    GPIOA->DOUT31_0 &= ~GPIO_DOUT31_0_DIO28_MASK;
+    GPIOA->DOUT31_0 |= GPIO_DOUT31_0_DIO31_MASK;
+    msec_delay(200);
+    GPIOA->DOUT31_0 &= ~GPIO_DOUT31_0_DIO31_MASK;
+    GPIOA->DOUT31_0 |= GPIO_DOUT31_0_DIO20_MASK;
+    msec_delay(200);
+    GPIO->DOUT31_0 &= ~GPIO_DOUT31_0_DIO20_MASK;
+    GPIOA->DOUT31_0 |= GPIO_DOUT31_0_DIO28_MASK;
+    msec_delay(200);
+    GPIOA->DOUT31_0 &= ~GPIO_DOUT31_0_DIO28_MASK;
+    GPIOA->DOUT31_0 |= GPIO_DOUT31_0_DIO31_MASK;
+    msec_delay(200);
+    GPIOA->DOUT31_0 &= ~GPIO_DOUT31_0_DIO31_MASK;
+    GPIOA->DOUT31_0 |= GPIO_DOUT31_0_DIO20_MASK;
+    msec_delay(200);
+    GPIO->DOUT31_0 &= ~GPIO_DOUT31_0_DIO20_MASK;
   }
 
-
-  
   
 } /* main */
 
