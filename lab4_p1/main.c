@@ -38,35 +38,36 @@
 //-----------------------------------------------------------------------------
 // Define function prototypes used by the program
 //-----------------------------------------------------------------------------
-void run_lab4_part4(uint8_t loop_count);
-void run_lab4_part5(uint8_t loop_count);
-void run_lab4_part6(uint8_t loop_count);
+void run_lab4_part1();
+void run_lab4_part2();
+void run_lab4_part3();
+void run_lab4_part4();
+void run_lab4_part5();
+void run_lab4_part6();
 
 //-----------------------------------------------------------------------------
 // Define symbolic constants used by the program
 //-----------------------------------------------------------------------------
-#define inbetween       (500)
+#define In_Between      (500)
 
-#define int_leds_on     (60)
-#define p1delay         (2000)
+#define Int_LEDs_On     (60)
+#define P1_Delay        (2000)
 #define numofLEDs       (8)
 
-#define p2delay         (200)
+#define p2delay         (50)
 
-#define p3delay         (250)
+#define p3delay         (50)
 
 #define seg7L           (56)
 #define p4seg7          (0)
 #define p4delay         (2000)
 
-#define p5on            (2000)
-#define p5off           (3000)
+#define p5on            (3000)
+#define p5off           (2000)
 #define p5seg7          (2)
 #define seg74           (102)
-#define p5iterations    (4)
 
 #define p6delay         (1)
-#define p6iterations    (200)
 #define seg7c           (57)
 #define seg7a           (119)
 #define seg7f           (113)
@@ -78,94 +79,124 @@ void run_lab4_part6(uint8_t loop_count);
 int main(void)
 {
     clock_init_40mhz();
+    launchpad_gpio_init();
     led_init();
     led_enable();
     seg7_init();
 
-    leds_on(int_leds_on);
-    msec_delay(p1delay);
+    run_lab4_part1();
+
+    run_lab4_part2();    
+
+    run_lab4_part3();
+
+    run_lab4_part4();
+
+    run_lab4_part5();    
+
+    run_lab4_part6();    
+
+} /* main */
+
+void run_lab4_part1()
+{
+    leds_on(Int_LEDs_On);
+    msec_delay(P1_Delay);
     leds_off();
 
-    msec_delay(inbetween);
-
+    msec_delay(In_Between);
+}
+void run_lab4_part2()
+{
     uint8_t loop_count = 0;
     uint8_t p2iterations = 10;
     while(loop_count < p2iterations)
     {
-        for(loop_count = 0; loop_count < numofLEDs; loop_count++)
+        uint8_t countup_index = 0;
+        uint8_t start_countup_loop = 0;
+        uint8_t end_countup_loop = 8;
+        for(countup_index = start_countup_loop; countup_index < end_countup_loop; countup_index++)
         {
-            led_on(loop_count);
+            led_on(countup_index);
             msec_delay(p2delay);
-            led_off(loop_count);
+            led_off(countup_index);
         }
 
-        for(loop_count = 0; loop_count < numofLEDs; loop_count--)
+        uint8_t countdown_index = 0;
+        uint8_t start_countdown_loop = 6;
+        uint8_t end_countdown_loop = 0;
+        for(countdown_index = start_countdown_loop; countdown_index > end_countdown_loop; countdown_index--)
         {
-            led_on(loop_count);
+            led_on(countdown_index);
             msec_delay(p2delay);
-            led_off(loop_count);
+            led_off(countdown_index);
         }
         
-        loop_count += 1;
+        loop_count ++;
         
     }
 
-    loop_count = 0;
+    msec_delay(In_Between);
+}
 
-    msec_delay(inbetween);
-
-    uint8_t p3iterations = 0;
+void run_lab4_part3()
+{
+    uint8_t loop_count = 0;
+    uint16_t p3iterations = 2;
 
     while(loop_count < p3iterations)
     {
-        leds_on(loop_count);
-        msec_delay(p3delay);
-        leds_off();
-        loop_count += 1;
+        uint16_t countup_index = 0;
+        uint16_t start_countup_loop = 0;
+        uint16_t end_countup_loop = 256;
+
+        for(countup_index = start_countup_loop; countup_index < end_countup_loop; countup_index++)
+        {
+            leds_on(countup_index);
+            msec_delay(p3delay);
+            leds_off();
+        }
+        loop_count++;
+        
     }
+    msec_delay(In_Between);
 
-    loop_count = 0;
+}
 
-    msec_delay(inbetween);
-
-    run_lab4_part4(loop_count);
-    loop_count = 0;
-
-    msec_delay(inbetween);
-
-    run_lab4_part5(loop_count);
-    loop_count = 0;
-
-    msec_delay(inbetween);
-
-    run_lab4_part6(loop_count);
-    loop_count = 0;
-
-
-} /* main */
-
-void run_lab4_part4(uint8_t loop_count)
+void run_lab4_part4()
 {
+    led_disable();
+
     seg7_on(seg7L, SEG7_DIG0_ENABLE_IDX);
     msec_delay(p4delay);
     seg7_off();
+
+    msec_delay(In_Between);
 }
 
-void run_lab4_part5(uint8_t loop_count)
+void run_lab4_part5()
 {
+    uint8_t loop_count = 0;
+    uint8_t p5iterations = 4;
+    
     while(loop_count < p5iterations)
     {
         seg7_on(seg74, SEG7_DIG2_ENABLE_IDX);
         msec_delay(p5on);
         seg7_off();
+        msec_delay(p5off);
 
-        loop_count += 1;
+        loop_count++;
     }
+    msec_delay(In_Between);
     
 }
 
-void run_lab4_part6(uint8_t loop_count)
+
+void run_lab4_part6()
 {
+    uint8_t loop_count = 0;
+    uint8_t p6iterations = 200;
     while(loop_count < p6iterations)
     {
         seg7_on(seg7c, SEG7_DIG0_ENABLE_IDX);
@@ -187,4 +218,5 @@ void run_lab4_part6(uint8_t loop_count)
         loop_count += 1;
         
     }
+    msec_delay(In_Between);
 }
