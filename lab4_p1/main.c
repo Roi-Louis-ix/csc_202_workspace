@@ -122,6 +122,8 @@ int main(void)
 
     msec_delay(inbetween);
 
+    run_lab4_part6();
+
 
 
 } /* main */
