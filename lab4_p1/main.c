@@ -28,17 +28,19 @@
 //-----------------------------------------------------------------------------
 #include <ti/devices/msp/msp.h>
 #include "clock.h"
+#include "LaunchPad.h"
 #include "ti/devices/msp/m0p/mspm0g350x.h"
 #include "ti/devices/msp/peripherals/hw_gpio.h"
 #include "ti/devices/msp/peripherals/hw_iomux.h"
 
 
+
 //-----------------------------------------------------------------------------
 // Define function prototypes used by the program
 //-----------------------------------------------------------------------------
-void run_lab4_part4(void);
-void run_lab4_part5(void);
-void run_lab4_part6(void);
+void run_lab4_part4(uint8_t loop_count);
+void run_lab4_part5(uint8_t loop_count);
+void run_lab4_part6(uint8_t loop_count);
 
 //-----------------------------------------------------------------------------
 // Define symbolic constants used by the program
@@ -47,6 +49,7 @@ void run_lab4_part6(void);
 
 #define int_leds_on     (60)
 #define p1delay         (2000)
+#define numofLEDs       (8)
 
 #define p2delay         (200)
 
@@ -71,6 +74,7 @@ void run_lab4_part6(void);
 
 
 
+
 int main(void)
 {
     clock_init_40mhz();
@@ -80,77 +84,89 @@ int main(void)
 
     leds_on(int_leds_on);
     msec_delay(p1delay);
-    leds_off(int_leds_on);
+    leds_off();
 
     msec_delay(inbetween);
 
-    while(loop_cntr < 5, loop_cntr = 0, loop_cntr++)
+    uint8_t loop_count = 0;
+    uint8_t p2iterations = 10;
+    while(loop_count < p2iterations)
     {
-        for(j = 0, j < 8, j++)
+        for(loop_count = 0; loop_count < numofLEDs; loop_count++)
         {
-            led_on(led_config_data[j]);
+            led_on(loop_count);
             msec_delay(p2delay);
-            led_off(led_config_data[j]);
+            led_off(loop_count);
         }
 
-        for(k = 0, k < 6, k--)
+        for(loop_count = 0; loop_count < numofLEDs; loop_count--)
         {
-            led_on(led_config_data[k]);
+            led_on(loop_count);
             msec_delay(p2delay);
-            led_off(led_config_data[k]);
+            led_off(loop_count);
         }
+        
+        loop_count += 1;
         
     }
 
+    loop_count = 0;
+
     msec_delay(inbetween);
 
-    while(i < 2, i=0, i++)
+    uint8_t p3iterations = 0;
+
+    while(loop_count < p3iterations)
     {
-        for(j = 0, j < 256, j++)
-        {
-            leds_on(led_config_data[j]);
-            msec_delay(p3delay);
-            leds_off();
-        }
+        leds_on(loop_count);
+        msec_delay(p3delay);
+        leds_off();
+        loop_count += 1;
     }
 
-    msec_delay(inbetween);
-
-    run_lab4_part4();
+    loop_count = 0;
 
     msec_delay(inbetween);
 
-    run_lab4_part5();
+    run_lab4_part4(loop_count);
+    loop_count = 0;
 
     msec_delay(inbetween);
 
-    run_lab4_part6();
+    run_lab4_part5(loop_count);
+    loop_count = 0;
 
+    msec_delay(inbetween);
+
+    run_lab4_part6(loop_count);
+    loop_count = 0;
 
 
 } /* main */
 
-void run_lab4_part4()
+void run_lab4_part4(uint8_t loop_count)
 {
     seg7_on(seg7L, SEG7_DIG0_ENABLE_IDX);
-    msec_delay(delay);
+    msec_delay(p4delay);
     seg7_off();
 }
 
-void run_lab4_part5()
+void run_lab4_part5(uint8_t loop_count)
 {
-    while(loop_count < p5iterations, loop_count = 0, i++)
+    while(loop_count < p5iterations)
     {
         seg7_on(seg74, SEG7_DIG2_ENABLE_IDX);
         msec_delay(p5on);
         seg7_off();
+
+        loop_count += 1;
     }
     
 }
 
-void run_lab4_part6()
+void run_lab4_part6(uint8_t loop_count)
 {
-    while(loop_count < p6iterations, loop_count = 0, loop_count++)
+    while(loop_count < p6iterations)
     {
         seg7_on(seg7c, SEG7_DIG0_ENABLE_IDX);
         msec_delay(p6delay);
@@ -167,6 +183,8 @@ void run_lab4_part6()
         seg7_on(seg7e, SEG7_DIG3_ENABLE_IDX);
         msec_delay(p6delay);
         seg7_off();
+
+        loop_count += 1;
         
     }
 }
