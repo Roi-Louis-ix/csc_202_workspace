@@ -60,8 +60,10 @@ void run_lab4_part6(void);
 #define p5off           (3000)
 #define p5seg7          (2)
 #define seg74           (102)
+#define p5iterations    (4)
 
 #define p6delay         (1)
+#define p6iterations    (200)
 #define seg7c           (57)
 #define seg7a           (119)
 #define seg7f           (113)
@@ -108,7 +110,7 @@ int main(void)
         {
             leds_on(led_config_data[j]);
             msec_delay(p3delay);
-            leds_off(led_config_data[j]);
+            leds_off();
         }
     }
 
@@ -130,40 +132,41 @@ int main(void)
 
 void run_lab4_part4()
 {
-    seg7_on(seg7L, p4seg7);
+    seg7_on(seg7L, SEG7_DIG0_ENABLE_IDX);
     msec_delay(delay);
-    seg7_off(seg7L, p4seg7);
+    seg7_off();
 }
 
 void run_lab4_part5()
 {
-    while(i < 4, i = 0, i++)
+    while(loop_count < p5iterations, loop_count = 0, i++)
     {
-        seg7_on(seg74, p5seg7);
+        seg7_on(seg74, SEG7_DIG2_ENABLE_IDX);
         msec_delay(p5on);
-        seg7_off(seg74, p5off);
+        seg7_off();
     }
     
 }
 
 void run_lab4_part6()
 {
-    while(i < 200, i = 0, i++)
+    while(loop_count < p6iterations, loop_count = 0, loop_count++)
     {
-        seg7_on(seg7c, 0);
+        seg7_on(seg7c, SEG7_DIG0_ENABLE_IDX);
         msec_delay(p6delay);
-        seg7_off(seg7c, 0);
+        seg7_off();
 
-        seg7_on(seg7a, 1);
+        seg7_on(seg7a, SEG7_DIG1_ENABLE_IDX);
         msec_delay(p6delay);
-        seg7_off(seg7_a, 1);
+        seg7_off();
 
-        seg7_on(seg7f, 2);
+        seg7_on(seg7f, SEG7_DIG2_ENABLE_IDX);
         msec_delay(p6delay);
-        seg7_off(seg7f);
+        seg7_off();
 
-        seg7_on(seg7e, 3);
+        seg7_on(seg7e, SEG7_DIG3_ENABLE_IDX);
         msec_delay(p6delay);
-        seg7_off(seg7e, e);
+        seg7_off();
+        
     }
 }
