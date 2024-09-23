@@ -61,8 +61,8 @@ int main(void)
 
 void run_lab5_part1()
 {
-    loop_count = 0;
-    p1_iterations = 3
+    uint8_t loop_count = 0;
+    uint8_t p1_iterations = 3;
     while(loop_count < p1_iterations)
     {
         if(is_pb_down(PB1_IDX))
@@ -70,7 +70,7 @@ void run_lab5_part1()
             msec_delay(P1_Push_Time);
             if(is_pb_down(PB1_IDX))
             {
-            seg7_on(Seg7_3, SEG7_DIG0_ENABLE_IDX);
+                seg7_on(Seg7_3, SEG7_DIG0_ENABLE_IDX);
             }
         }
 
@@ -82,5 +82,6 @@ void run_lab5_part1()
                 seg7_off();
             }
         }
+        loop_count++;
     }
 }
