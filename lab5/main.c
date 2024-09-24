@@ -35,6 +35,7 @@
 void run_lab5_part1();
 void run_lab5_part2();
 void run_lab5_part3();
+void run_lab5_part4();
 
 //-----------------------------------------------------------------------------
 // Define symbolic constants used by the program
@@ -166,7 +167,7 @@ void run_lab5_part2()
  {
     msec_delay(In_Between);
     keypad_init();
-    
+
     uint8_t loop_count = 0;
     uint8_t p4_iterations = 4;
     while(loop_count < p4_iterations)
