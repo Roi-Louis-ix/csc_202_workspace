@@ -41,8 +41,9 @@ void run_lab5_part3();
 //-----------------------------------------------------------------------------
 #define DEBOUNCE            (600)   //time for which PBs need to be depressed
                                        // in order to activate 7seg, in ms
-#define SEG7_3                  (0x4F) //Displays the number 3 on 7seg display
+#define SEG7_3              (0x4F)  //Displays the number 3 on 7seg display
 #define In_Between          (600)
+#define P4_On_Off           (500)   //On and off time for LEDs in Part 4
 
 //-----------------------------------------------------------------------------
 // Define global variables and structures here.
@@ -153,11 +154,31 @@ void run_lab5_part2()
     uint8_t p3_iterations = 8;
     while(loop_count < p3_iterations)
     {
-        keypad_scan();
         uint8_t key = getkey_pressed();
         leds_on(key);
         loop_count++;
         msec_delay(DEBOUNCE);
         wait_no_key_pressed();
+    }
+ }
+
+ void run_lab5_part4()
+ {
+    msec_delay(In_Between);
+    keypad_init();
+    
+    uint8_t loop_count = 0;
+    uint8_t p4_iterations = 4;
+    while(loop_count < p4_iterations)
+    {
+        uint8_t num_of_flashes = keypad_scan();
+        uint8_t flash_count = 0;
+        for(flash_count; flash_count < num_of_flashes; flash_count++)
+        {
+            leds_on(0xFFFF);
+            msec_delay(P4_On_Off);
+            leds_off();
+            msec_delay(P4_On_Off);
+        }
     }
  }
