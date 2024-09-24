@@ -33,6 +33,7 @@
 // Define function prototypes used by the program
 //-----------------------------------------------------------------------------
 void run_lab5_part1();
+void run_lab5_part2();
 
 //-----------------------------------------------------------------------------
 // Define symbolic constants used by the program
@@ -40,6 +41,7 @@ void run_lab5_part1();
 #define DEBOUNCE            (600)   //time for which PBs need to be depressed
                                        // in order to activate 7seg, in ms
 #define SEG7_3                  (0x4F) //Displays the number 3 on 7seg display
+#define In_Between          (500)
 
 //-----------------------------------------------------------------------------
 // Define global variables and structures here.
@@ -68,7 +70,7 @@ void run_lab5_part1()
     bool display_on = false;
     while(loop_count < p1_iterations)
     {
-        if(is_pb_down(PB1_IDX))
+        if(is_lpsw_down(LP_SW2_IDX))
         {
             if(display_on)
             {
@@ -90,6 +92,7 @@ void run_lab5_part1()
 
 void run_lab5_part2()
 {
+    msec_delay(In_Between);
     typedef enum
     {
         get_low,
@@ -105,7 +108,7 @@ void run_lab5_part2()
         {
             uint8_t dipsw_value = dipsw_read();
             display_num |= dipsw_value;
-            if(is_pb_down(PB1_IDX))
+            if(is_lpsw_down(LP_SW2_IDX))
             {
                 state = get_high;
                 msec_delay(DEBOUNCE);
@@ -115,8 +118,8 @@ void run_lab5_part2()
         case(get_high):
         {
             uint8_t dipsw_value = dipsw_read();
-            display_num |= (dipsw_value >> 4);
-            if(is_pb_down(PB1_IDX))
+            display_num |= (dipsw_value << 4);
+            if(is_lpsw_down(LP_SW2_IDX))
             {
                 state = display;
                 msec_delay(DEBOUNCE);
@@ -125,11 +128,15 @@ void run_lab5_part2()
 
         case(display):
         {
-            seg7_on(SEG7_DIG0_ENABLE_IDX, display_num);
-            if(is_pb_down(PB1_IDX))
+            if(is_lpsw_down(LP_SW2_IDX))
             {
+                seg7_on(SEG7_DIG2_ENABLE_IDX, display_num);
                 state = get_low;
                 msec_delay(DEBOUNCE);
+            }
+            else
+            {
+                seg7_on(SEG7_DIG0_ENABLE_IDX, display_num);
             }
         }
     }
