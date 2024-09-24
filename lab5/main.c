@@ -37,9 +37,9 @@ void run_lab5_part1();
 //-----------------------------------------------------------------------------
 // Define symbolic constants used by the program
 //-----------------------------------------------------------------------------
-#define P1_Push_Time            (10)   //time for which PBs need to be depressed
+#define DEBOUNCE            (600)   //time for which PBs need to be depressed
                                        // in order to activate 7seg, in ms
-#define Seg7_3                  (0x4F) //Displays the number 3 on 7seg display
+#define SEG7_3                  (0x4F) //Displays the number 3 on 7seg display
 
 //-----------------------------------------------------------------------------
 // Define global variables and structures here.
@@ -54,8 +54,10 @@ int main(void)
     clock_init_40mhz();
     launchpad_gpio_init();
     seg7_init();
+    dipsw_init();
 
     run_lab5_part1();
+    run_lab5_part2();
 
 } /* main */
 
@@ -63,25 +65,72 @@ void run_lab5_part1()
 {
     uint8_t loop_count = 0;
     uint8_t p1_iterations = 3;
+    bool display_on = false;
     while(loop_count < p1_iterations)
     {
         if(is_pb_down(PB1_IDX))
         {
-            msec_delay(P1_Push_Time);
+            if(display_on)
+            {
+                seg7_off();
+                display_on = false;
+                loop_count++;
+                
+            }
+            else
+            {
+            seg7_on(SEG7_3, SEG7_DIG0_ENABLE_IDX);
+            display_on = true;
+            }
+        }
+        msec_delay(DEBOUNCE);
+        
+    }
+}
+
+void run_lab5_part2()
+{
+    typedef enum
+    {
+        get_low,
+        get_high,
+        display,
+    } fsm_states;
+
+    fsm_states state = get_low;
+    uint8_t display_num = 0;
+    switch(state)
+    {
+        case(get_low):
+        {
+            uint8_t dipsw_value = dipsw_read();
+            display_num |= dipsw_value;
             if(is_pb_down(PB1_IDX))
             {
-                seg7_on(Seg7_3, SEG7_DIG0_ENABLE_IDX);
+                state = get_high;
+                msec_delay(DEBOUNCE);
             }
         }
 
-        if(is_pb_down(PB1_IDX))
+        case(get_high):
         {
-            msec_delay(P1_Push_Time);
+            uint8_t dipsw_value = dipsw_read();
+            display_num |= (dipsw_value >> 4);
             if(is_pb_down(PB1_IDX))
             {
-                seg7_off();
+                state = display;
+                msec_delay(DEBOUNCE);
             }
         }
-        loop_count++;
+
+        case(display):
+        {
+            seg7_on(SEG7_DIG0_ENABLE_IDX, display_num);
+            if(is_pb_down(PB1_IDX))
+            {
+                state = get_low;
+                msec_delay(DEBOUNCE);
+            }
+        }
     }
 }
