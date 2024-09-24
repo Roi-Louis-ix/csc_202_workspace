@@ -34,6 +34,7 @@
 //-----------------------------------------------------------------------------
 void run_lab5_part1();
 void run_lab5_part2();
+void run_lab5_part3();
 
 //-----------------------------------------------------------------------------
 // Define symbolic constants used by the program
@@ -41,7 +42,7 @@ void run_lab5_part2();
 #define DEBOUNCE            (600)   //time for which PBs need to be depressed
                                        // in order to activate 7seg, in ms
 #define SEG7_3                  (0x4F) //Displays the number 3 on 7seg display
-#define In_Between          (500)
+#define In_Between          (600)
 
 //-----------------------------------------------------------------------------
 // Define global variables and structures here.
@@ -60,17 +61,18 @@ int main(void)
 
     run_lab5_part1();
     run_lab5_part2();
+    run_lab5_part3();
 
 } /* main */
 
 void run_lab5_part1()
-{
+{   
     uint8_t loop_count = 0;
     uint8_t p1_iterations = 3;
     bool display_on = false;
     while(loop_count < p1_iterations)
-    {
-        if(is_lpsw_down(LP_SW2_IDX))
+    {   
+        if(is_pb_down(PB1_IDX))
         {
             if(display_on)
             {
@@ -78,15 +80,16 @@ void run_lab5_part1()
                 display_on = false;
                 loop_count++;
                 
+                
             }
             else
             {
-            seg7_on(SEG7_3, SEG7_DIG0_ENABLE_IDX);
-            display_on = true;
+                seg7_on(SEG7_3, SEG7_DIG0_ENABLE_IDX);
+                display_on = true;
             }
+            
         }
         msec_delay(DEBOUNCE);
-        
     }
 }
 
@@ -141,3 +144,20 @@ void run_lab5_part2()
         }
     }
 }
+
+ void run_lab5_part3()
+ {
+    msec_delay(In_Between);
+
+    uint8_t loop_count = 0;
+    uint8_t p3_iterations = 8;
+    while(loop_count < p3_iterations)
+    {
+        keypad_scan();
+        uint8_t key = getkey_pressed();
+        leds_on(key);
+        loop_count++;
+        msec_delay(DEBOUNCE);
+        wait_no_key_pressed();
+    }
+ }
