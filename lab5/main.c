@@ -63,12 +63,11 @@ int main(void)
     dipsw_init();
     lpsw_init();
     keypad_init();
-    lp_leds_init();
 
-    run_lab5_part1();
+    //run_lab5_part1();
     run_lab5_part2();
-    run_lab5_part3();
-    run_lab5_part4();
+    //run_lab5_part3();
+    //run_lab5_part4();
 
 } /* main */
 
@@ -146,10 +145,14 @@ void run_lab5_part2()
     {
         case(get_low):
         {
+            while(is_lpsw_up(LP_SW2_IDX)) {}
             if(is_lpsw_down(LP_SW2_IDX))
             {
                 uint8_t dipsw_value = dipsw_read();
                 display_num |= dipsw_value;
+                msec_delay(DEBOUNCE);
+                while(is_lpsw_down(LP_SW2_IDX)) {}
+
                 state = get_high;
                 msec_delay(DEBOUNCE);
             }
@@ -157,27 +160,28 @@ void run_lab5_part2()
 
         case(get_high):
         {
+            while(is_lpsw_up(LP_SW2_IDX)) {}
             if(is_lpsw_down(LP_SW2_IDX))
             {
                 uint8_t dipsw_value = dipsw_read();
                 display_num |= (dipsw_value << 4);
+                msec_delay(DEBOUNCE);
+                while(is_lpsw_down(LP_SW2_IDX)) {}
+                
                 state = display;
                 msec_delay(DEBOUNCE);
+                
             }
         }
 
         case(display):
         {
-            if(is_lpsw_down(LP_SW2_IDX))
+            while(is_lpsw_up(LP_SW2_IDX)) {}
+            while(is_lpsw_down(LP_SW2_IDX)) 
             {
-                seg7_on(SEG7_DIG2_ENABLE_IDX, display_num);
-                state = get_low;
-                msec_delay(DEBOUNCE);
+                seg7_on(SEG7_DIG2_ENABLE_IDX, 0xFF);
             }
-            else
-            {
-                seg7_on(SEG7_DIG0_ENABLE_IDX, display_num);
-            }
+            
         }
     }
 }
@@ -200,6 +204,7 @@ void run_lab5_part2()
  void run_lab5_part3()
  {
     msec_delay(In_Between);
+    lp_leds_init();
 
     uint8_t loop_count = 0;
     uint8_t p3_iterations = 8;
