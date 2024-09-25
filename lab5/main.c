@@ -60,6 +60,7 @@ int main(void)
     launchpad_gpio_init();
     seg7_init();
     dipsw_init();
+    lpsw_init();
     keypad_init();
 
     run_lab5_part1();
