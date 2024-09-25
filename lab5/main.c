@@ -41,7 +41,7 @@ void run_lab5_part4();
 // Define symbolic constants used by the program
 //-----------------------------------------------------------------------------
 #define DEBOUNCE            (600)   //time for which PBs need to be depressed
-                                       // in order to activate 7seg, in ms
+                                    // in order to activate 7seg, in ms
 #define SEG7_3              (0x4F)  //Displays the number 3 on 7seg display
 #define In_Between          (600)
 #define P4_On_Off           (500)   //On and off time for LEDs in Part 4
@@ -60,10 +60,12 @@ int main(void)
     launchpad_gpio_init();
     seg7_init();
     dipsw_init();
+    keypad_init();
 
     run_lab5_part1();
     run_lab5_part2();
     run_lab5_part3();
+    run_lab5_part4();
 
 } /* main */
 
@@ -166,7 +168,6 @@ void run_lab5_part2()
  void run_lab5_part4()
  {
     msec_delay(In_Between);
-    keypad_init();
 
     uint8_t loop_count = 0;
     uint8_t p4_iterations = 4;
