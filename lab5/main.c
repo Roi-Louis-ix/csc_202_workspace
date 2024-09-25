@@ -40,11 +40,12 @@ void run_lab5_part4();
 //-----------------------------------------------------------------------------
 // Define symbolic constants used by the program
 //-----------------------------------------------------------------------------
-#define DEBOUNCE            (600)   //time for which PBs need to be depressed
-                                    // in order to activate 7seg, in ms
-#define SEG7_3              (0x4F)  //Displays the number 3 on 7seg display
+#define DEBOUNCE            (600)       //time for which PBs need to be depressed
+                                        // in order to activate 7seg, in ms
+#define SEG7_3              (0x4F)      //Displays the number 3 on 7seg display
 #define In_Between          (600)
-#define P4_On_Off           (500)   //On and off time for LEDs in Part 4
+#define P4_LEDs_On          (0xFFFF)    //Turns on all LEDs
+#define P4_On_Off           (500)       //On and off time for LEDs in Part 4
 
 //-----------------------------------------------------------------------------
 // Define global variables and structures here.
@@ -62,6 +63,7 @@ int main(void)
     dipsw_init();
     lpsw_init();
     keypad_init();
+    lp_leds_init();
 
     run_lab5_part1();
     run_lab5_part2();
@@ -70,6 +72,22 @@ int main(void)
 
 } /* main */
 
+//-----------------------------------------------------------------------------
+// DESCRIPTION:
+// This function allows the number 3 to be displayed on the 7seg display by PB1
+// or turned off by PB1 if it is already being displayed.
+// 
+//  
+//  
+// INPUT PARAMETERS:
+// none
+//
+// OUTPUT PARAMETERS:
+//  none
+//
+// RETURN:
+// none
+// -----------------------------------------------------------------------------
 void run_lab5_part1()
 {   
     uint8_t loop_count = 0;
@@ -83,9 +101,7 @@ void run_lab5_part1()
             {
                 seg7_off();
                 display_on = false;
-                loop_count++;
-                
-                
+                loop_count++;                
             }
             else
             {
@@ -98,14 +114,30 @@ void run_lab5_part1()
     }
 }
 
+//-----------------------------------------------------------------------------
+// DESCRIPTION:
+// This function acts as a state machine that reads the DIP switch values and
+// writes them to the 7seg display when SW2 is pressed on the LaunchPad. 
+//  
+//  
+// INPUT PARAMETERS:
+// none
+//
+// OUTPUT PARAMETERS:
+//  none
+//
+// RETURN:
+// none
+// -----------------------------------------------------------------------------
 void run_lab5_part2()
 {
     msec_delay(In_Between);
     typedef enum
     {
-        get_low,
-        get_high,
-        display,
+        get_low,        //Gets the first 4 digits for the 7seg display
+        get_high,       //Gets the last 3 digits for the 7seg display
+        display,        //Displays the results from get_low and get_high on
+                        //the 7seg display
     } fsm_states;
 
     fsm_states state = get_low;
@@ -114,10 +146,10 @@ void run_lab5_part2()
     {
         case(get_low):
         {
-            uint8_t dipsw_value = dipsw_read();
-            display_num |= dipsw_value;
             if(is_lpsw_down(LP_SW2_IDX))
             {
+                uint8_t dipsw_value = dipsw_read();
+                display_num |= dipsw_value;
                 state = get_high;
                 msec_delay(DEBOUNCE);
             }
@@ -125,10 +157,10 @@ void run_lab5_part2()
 
         case(get_high):
         {
-            uint8_t dipsw_value = dipsw_read();
-            display_num |= (dipsw_value << 4);
             if(is_lpsw_down(LP_SW2_IDX))
             {
+                uint8_t dipsw_value = dipsw_read();
+                display_num |= (dipsw_value << 4);
                 state = display;
                 msec_delay(DEBOUNCE);
             }
@@ -150,6 +182,21 @@ void run_lab5_part2()
     }
 }
 
+//-----------------------------------------------------------------------------
+// DESCRIPTION:
+// This function displays the binary value of the keypad pressed on the
+// LaunchPad LEDs.
+//  
+//  
+// INPUT PARAMETERS:
+// none
+//
+// OUTPUT PARAMETERS:
+//  none
+//
+// RETURN:
+// none
+// -----------------------------------------------------------------------------
  void run_lab5_part3()
  {
     msec_delay(In_Between);
@@ -178,7 +225,7 @@ void run_lab5_part2()
         uint8_t flash_count = 0;
         for(flash_count; flash_count < num_of_flashes; flash_count++)
         {
-            leds_on(0xFFFF);
+            leds_on(P4_LEDs_On);
             msec_delay(P4_On_Off);
             leds_off();
             msec_delay(P4_On_Off);
