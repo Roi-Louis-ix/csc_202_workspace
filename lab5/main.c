@@ -65,8 +65,8 @@ int main(void)
     keypad_init();
 
     //run_lab5_part1();
-    run_lab5_part2();
-    //run_lab5_part3();
+    //run_lab5_part2();
+    run_lab5_part3();
     //run_lab5_part4();
 
 } /* main */
@@ -167,7 +167,7 @@ void run_lab5_part2()
                 display_num |= (dipsw_value << 4);
                 msec_delay(DEBOUNCE);
                 while(is_lpsw_down(LP_SW2_IDX)) {}
-                
+
                 state = display;
                 msec_delay(DEBOUNCE);
                 
@@ -177,9 +177,9 @@ void run_lab5_part2()
         case(display):
         {
             while(is_lpsw_up(LP_SW2_IDX)) {}
-            while(is_lpsw_down(LP_SW2_IDX)) 
+            if(is_lpsw_down(LP_SW2_IDX)) 
             {
-                seg7_on(SEG7_DIG2_ENABLE_IDX, 0xFF);
+                seg7_on(SEG7_DIG2_ENABLE_IDX, display_num);
             }
             
         }
@@ -211,10 +211,11 @@ void run_lab5_part2()
     while(loop_count < p3_iterations)
     {
         uint8_t key = getkey_pressed();
-        leds_on(key);
+        lp_leds_on(key);
         loop_count++;
         msec_delay(DEBOUNCE);
         wait_no_key_pressed();
+        lp_leds_off(key);
     }
  }
 
