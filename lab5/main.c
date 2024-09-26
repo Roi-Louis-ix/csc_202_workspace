@@ -47,6 +47,8 @@ void run_lab5_part4();
 #define P4_LEDs_On          (0xFFFF)    //Turns on all LEDs
 #define P4_On_Off           (500)       //On and off time for LEDs in Part 4
 
+#define loop_stop           (3)
+
 //-----------------------------------------------------------------------------
 // Define global variables and structures here.
 // NOTE: when possible avoid using global variables
@@ -63,11 +65,13 @@ int main(void)
     dipsw_init();
     lpsw_init();
     keypad_init();
+    led_init();
+    led_enable();
 
     //run_lab5_part1();
     //run_lab5_part2();
     run_lab5_part3();
-    //run_lab5_part4();
+    run_lab5_part4();
 
 } /* main */
 
@@ -141,47 +145,65 @@ void run_lab5_part2()
 
     fsm_states state = get_low;
     uint8_t display_num = 0;
-    switch(state)
+    uint8_t loop_count = 0;
+    while(loop_count < loop_stop)
     {
-        case(get_low):
+
+        switch(state)
         {
-            while(is_lpsw_up(LP_SW2_IDX)) {}
-            if(is_lpsw_down(LP_SW2_IDX))
+            case(get_low):
             {
-                uint8_t dipsw_value = dipsw_read();
-                display_num |= dipsw_value;
-                msec_delay(DEBOUNCE);
-                while(is_lpsw_down(LP_SW2_IDX)) {}
-
-                state = get_high;
-                msec_delay(DEBOUNCE);
-            }
-        }
-
-        case(get_high):
-        {
-            while(is_lpsw_up(LP_SW2_IDX)) {}
-            if(is_lpsw_down(LP_SW2_IDX))
-            {
-                uint8_t dipsw_value = dipsw_read();
-                display_num |= (dipsw_value << 4);
-                msec_delay(DEBOUNCE);
-                while(is_lpsw_down(LP_SW2_IDX)) {}
-
-                state = display;
-                msec_delay(DEBOUNCE);
+                while(is_lpsw_up(LP_SW2_IDX)) {}
+                if(is_lpsw_down(LP_SW2_IDX))
+                {
+                    uint8_t dipsw_value = dipsw_read();
+                    display_num |= dipsw_value;
+                    msec_delay(DEBOUNCE);
+                    while(is_lpsw_down(LP_SW2_IDX)) {}
                 
+                    state = get_high;
+                    
+                }
             }
-        }
 
-        case(display):
-        {
-            while(is_lpsw_up(LP_SW2_IDX)) {}
-            if(is_lpsw_down(LP_SW2_IDX)) 
+            case(get_high):
             {
-                seg7_on(SEG7_DIG2_ENABLE_IDX, display_num);
+                while(is_lpsw_up(LP_SW2_IDX)) {}
+                if(is_lpsw_down(LP_SW2_IDX))
+                {
+                    uint8_t dipsw_value = dipsw_read();
+                    display_num |= (dipsw_value << 4);
+                    msec_delay(DEBOUNCE);
+                    while(is_lpsw_down(LP_SW2_IDX)) {}
+
+                    state = display;
+                    msec_delay(DEBOUNCE);
+                
+                }
             }
+
+            case(display):
+            {
+                while(is_lpsw_up(LP_SW2_IDX)) 
+                {
+                    if(is_pb_down(PB1_IDX))
+                    {
+                        seg7_on(display_num, SEG7_DIG2_ENABLE_IDX);
+                    }
+                    else 
+                    {
+                        seg7_on(display_num, SEG7_DIG0_ENABLE_IDX);
+                    }
+                }
             
+                while(is_lpsw_down(LP_SW2_IDX)) {}
+                
+                display_num = 0;
+                state = get_low;
+                seg7_off();
+                
+                loop_count++;
+            }
         }
     }
 }
@@ -204,18 +226,17 @@ void run_lab5_part2()
  void run_lab5_part3()
  {
     msec_delay(In_Between);
-    lp_leds_init();
 
     uint8_t loop_count = 0;
     uint8_t p3_iterations = 8;
     while(loop_count < p3_iterations)
     {
-        uint8_t key = getkey_pressed();
-        lp_leds_on(key);
+        uint8_t pressed = getkey_pressed();
+        leds_on(pressed);
         loop_count++;
         msec_delay(DEBOUNCE);
         wait_no_key_pressed();
-        lp_leds_off(key);
+        leds_off();
     }
  }
 
@@ -225,9 +246,10 @@ void run_lab5_part2()
 
     uint8_t loop_count = 0;
     uint8_t p4_iterations = 4;
+    
     while(loop_count < p4_iterations)
     {
-        uint8_t num_of_flashes = keypad_scan();
+        uint8_t num_of_flashes = getkey_pressed();
         uint8_t flash_count = 0;
         for(flash_count; flash_count < num_of_flashes; flash_count++)
         {
@@ -236,5 +258,7 @@ void run_lab5_part2()
             leds_off();
             msec_delay(P4_On_Off);
         }
+        wait_no_key_pressed();
+        loop_count++;
     }
  }
