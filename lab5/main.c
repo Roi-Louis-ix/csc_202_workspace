@@ -40,7 +40,7 @@ void run_lab5_part4();
 //-----------------------------------------------------------------------------
 // Define symbolic constants used by the program
 //-----------------------------------------------------------------------------
-#define DEBOUNCE            (600)       //time for which PBs need to be depressed
+#define DEBOUNCE            (100)       //time for which PBs need to be depressed
                                         // in order to activate 7seg, in ms
 #define SEG7_3              (0x4F)      //Displays the number 3 on 7seg display
 #define In_Between          (600)
@@ -66,10 +66,12 @@ int main(void)
     lpsw_init();
     keypad_init();
     led_init();
-    led_enable();
+    
 
-    //run_lab5_part1();
-    //run_lab5_part2();
+    run_lab5_part1();
+    run_lab5_part2();
+    leds_on(0);
+    led_enable();
     run_lab5_part3();
     run_lab5_part4();
 
@@ -112,8 +114,10 @@ void run_lab5_part1()
                 display_on = true;
             }
             
+            while(is_pb_down(PB1_IDX)) {}
+            msec_delay(DEBOUNCE);
         }
-        msec_delay(DEBOUNCE);
+        
     }
 }
 
@@ -158,9 +162,9 @@ void run_lab5_part2()
                 {
                     uint8_t dipsw_value = dipsw_read();
                     display_num |= dipsw_value;
-                    msec_delay(DEBOUNCE);
                     while(is_lpsw_down(LP_SW2_IDX)) {}
-                
+                    msec_delay(DEBOUNCE);
+
                     state = get_high;
                     
                 }
@@ -173,39 +177,41 @@ void run_lab5_part2()
                 {
                     uint8_t dipsw_value = dipsw_read();
                     display_num |= (dipsw_value << 4);
-                    msec_delay(DEBOUNCE);
                     while(is_lpsw_down(LP_SW2_IDX)) {}
+                    msec_delay(DEBOUNCE);
 
                     state = display;
-                    msec_delay(DEBOUNCE);
                 
                 }
             }
 
             case(display):
             {
-                while(is_lpsw_up(LP_SW2_IDX)) 
+
+                if(is_pb_down(PB1_IDX))
                 {
-                    if(is_pb_down(PB1_IDX))
-                    {
-                        seg7_on(display_num, SEG7_DIG2_ENABLE_IDX);
-                    }
-                    else 
-                    {
-                        seg7_on(display_num, SEG7_DIG0_ENABLE_IDX);
-                    }
+                    seg7_on(display_num, SEG7_DIG2_ENABLE_IDX);
+                    while(is_pb_down(PB1_IDX)) {}
+                    msec_delay(DEBOUNCE);
+                }
+                else 
+                {
+                    seg7_on(display_num, SEG7_DIG0_ENABLE_IDX);
                 }
             
-                while(is_lpsw_down(LP_SW2_IDX)) {}
-                
-                display_num = 0;
-                state = get_low;
-                seg7_off();
-                
-                loop_count++;
+                if(is_lpsw_down(LP_SW2_IDX)) 
+                {
+                    display_num = 0;
+                    state = get_low;
+                    seg7_off();
+                    loop_count++;
+                    while(is_lpsw_down(LP_SW2_IDX)) {}
+                    msec_delay(DEBOUNCE);
+                }
             }
         }
-    }
+    } 
+    seg7_off();
 }
 
 //-----------------------------------------------------------------------------
@@ -234,9 +240,8 @@ void run_lab5_part2()
         uint8_t pressed = getkey_pressed();
         leds_on(pressed);
         loop_count++;
-        msec_delay(DEBOUNCE);
         wait_no_key_pressed();
-        leds_off();
+        msec_delay(DEBOUNCE);
     }
  }
 
@@ -259,6 +264,7 @@ void run_lab5_part2()
             msec_delay(P4_On_Off);
         }
         wait_no_key_pressed();
+        msec_delay(DEBOUNCE);
         loop_count++;
     }
  }
