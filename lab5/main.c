@@ -1,16 +1,18 @@
 //*****************************************************************************
 //*****************************    C Source Code    ***************************
 //*****************************************************************************
-//  DESIGNER NAME:  TBD
+//  DESIGNER NAME:  Matthew Barry
 //
-//       LAB NAME:  TBD
+//       LAB NAME:  Lab 5: Interfacing with Inputs
 //
 //      FILE NAME:  main.c
 //
 //-----------------------------------------------------------------------------
 //
 // DESCRIPTION:
-//    This program serves as a ... 
+//    This program serves as a controller of the expansion board 7seg and LED
+//    displays based on inputs through the expansion board pushbuttons, DIP 
+//    switches and keypad, and the LaunchPad switches. 
 //
 //*****************************************************************************
 //*****************************************************************************
@@ -40,14 +42,13 @@ void run_lab5_part4();
 //-----------------------------------------------------------------------------
 // Define symbolic constants used by the program
 //-----------------------------------------------------------------------------
-#define DEBOUNCE            (100)       //time for which PBs need to be depressed
-                                        // in order to activate 7seg, in ms
-#define SEG7_3              (0x4F)      //Displays the number 3 on 7seg display
-#define In_Between          (600)
+#define DEBOUNCE            (100)       //Switch debounce time in ms
+#define SEG7_3              (0x4F)      //7seg hex code for the number 3
+#define In_Between          (600)       //Delay between parts
 #define P4_LEDs_On          (0xFFFF)    //Turns on all LEDs
 #define P4_On_Off           (500)       //On and off time for LEDs in Part 4
+                                        //in ms
 
-#define loop_stop           (3)
 
 //-----------------------------------------------------------------------------
 // Define global variables and structures here.
@@ -150,7 +151,8 @@ void run_lab5_part2()
     fsm_states state = get_low;
     uint8_t display_num = 0;
     uint8_t loop_count = 0;
-    while(loop_count < loop_stop)
+    uint8_t p2_iterations = 3;
+    while(loop_count < p2_iterations)
     {
 
         switch(state)
@@ -245,6 +247,21 @@ void run_lab5_part2()
     }
  }
 
+//-----------------------------------------------------------------------------
+// DESCRIPTION:
+// This function flashes all 8 LEDs for a certain number of times corresponding
+// to the keypad button pressed.
+//  
+//  
+// INPUT PARAMETERS:
+// none
+//
+// OUTPUT PARAMETERS:
+//  none
+//
+// RETURN:
+// none
+// -----------------------------------------------------------------------------
  void run_lab5_part4()
  {
     msec_delay(In_Between);
