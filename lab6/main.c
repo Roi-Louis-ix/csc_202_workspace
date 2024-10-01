@@ -142,23 +142,68 @@ void run_lab6_part3()
     while(counting)
     {
         lcd_clear();
-        lcd_write_byte(timer_count);
-        if(is_pb_down(PB1_IDX))
-        {
-            msec_delay(Debounce);
-            timer_count = 100;
-        }
         if(is_pb_down(PB2_IDX))
         {
-        msec_delay(Debounce);
+            msec_delay(Debounce);
             counting = 0;
         }
         if(timer_count == timer_stop)
         {
             counting = 0;
         }
+        lcd_write_byte(timer_count);
+        if(is_pb_down(PB1_IDX))
+        {
+            msec_delay(Debounce);
+            timer_count = 100;
+        }
+        
     }
 
     lcd_set_ddram_addr(LCD_LINE1_ADDR);
     lcd_write_string("Part 3 Done.");
+}
+
+void run_lab6_part4()
+{
+    lcd_set_ddram_addr(LCD_LINE2_ADDR);
+    lcd_write_string("Press PB2");
+
+    while(is_pb_up(PB2_IDX)) {}
+    lcd_clear();
+    lcd_write_string("Running Part 4");
+    msec_delay(Running_Part);
+
+    uint8_t pressed_key = 0;
+    bool running = 1;
+    uint8_t addr = LCD_LINE1_ADDR;
+    while(running)
+    {
+        lcd_set_ddram_addr(addr);
+        pressed_key = keypad_scan();
+        lcd_write_byte(pressed_key);
+        addr++;
+
+        if(addr > LCD_LINE1_ADDR + LCD_CHAR_POSITION_16)
+        {
+            addr = LCD_LINE2_ADDR;
+        }
+        if(addr > LCD_LINE2_ADDR + LCD_CHAR_POSITION_16)
+        {
+            lcd_clear();
+            addr = LCD_LINE1_ADDR;
+        }
+        while(is_pb_down(PB1_IDX))
+        {
+            msec_delay(Debounce);
+            lcd_clear();
+            addr = LCD_LINE1_ADDR;
+        }
+        while(is_pb_down(PB2_IDX))
+        {
+            msec_delay(Debounce);
+            lcd_clear();
+            running = 0;
+        }
+    }
 }
