@@ -169,6 +169,8 @@ void lcd_set_display_on(void);
 void lcd_set_display_off(void);
 void hex_to_lcd(uint8_t hex_value);
 int8_t hex_to_ascii(uint8_t hex_value);
+void byte_to_ascii(uint8_t byte, char* string);
+void doublebyte_to_ascii(uint16_t doublebyte, char* string);
 
 void lcd_write_byte(uint8_t byte);
 void lcd_write_doublebyte(uint16_t doublebyte);

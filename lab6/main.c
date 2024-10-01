@@ -66,8 +66,9 @@ int main(void)
 
     dipsw_init();
 
-    run_lab6_part1();
-    run_lab6_part2();
+    //run_lab6_part1();
+    //run_lab6_part2();
+    run_lab6_part3();
 } /* main */
 
 void run_lab6_part1()
@@ -91,31 +92,33 @@ void run_lab6_part1()
 void run_lab6_part2()
 {
     uint32_t top_num = 1234567890;
-    uint16_t bot_num = doublebyte_to_ascii(1234);
-    uint8_t top_num2 = byte_to_ascii(123);
+    uint16_t bot_num = 1234;
+    uint8_t top_num2 = 123;
 
     //Begin P2
-    while(is_pb_up(PB2_IDX)) {msec_delay(Debounce)}
+    while(is_pb_up(PB2_IDX)) {msec_delay(Debounce);}
     lcd_clear();
     lcd_write_string("Running Part 2");
     msec_delay(Running_Part);
 
     //First two numbers displayed
     lcd_clear();
-    lcd_set_ddram_addr(LCD_LINE1_ADDR + LCD_CHAR_POSITION_3);
-    lcd_write_doublebyte(top_num);
+    lcd_set_ddram_addr(LCD_LINE1_ADDR + LCD_CHAR_POSITION_4);
+    lcd_write_quadbyte(top_num);
 
-    while(is_pb_up(PB1_IDX)) {msec_delay(Debounce)}
-    lcd_set_ddram_addr(LCD_LINE2_ADDR + LCD_CHAR_POSITION_5);
+    while(is_pb_up(PB1_IDX)) {msec_delay(Debounce);}
+    lcd_set_ddram_addr(LCD_LINE2_ADDR + LCD_CHAR_POSITION_6);
     lcd_write_doublebyte(bot_num);
+    while(is_pb_down(PB1_IDX)) {}
 
     //Display the third number
-    while(is_pb_up(PB1_IDX)) {msec_delay(Debounce)}
+    while(is_pb_up(PB1_IDX)) {msec_delay(Debounce);}
     lcd_clear();
     lcd_set_ddram_addr(LCD_LINE1_ADDR + LCD_CHAR_POSITION_6);
     lcd_write_doublebyte(top_num2);
+    while(is_pb_down(PB1_IDX)) {}
 
-    while(is_pb_up(PB1_IDX)) {msec_delay(Debounce)}
+    while(is_pb_up(PB1_IDX)) {msec_delay(Debounce);}
     lcd_clear();
     lcd_set_ddram_addr(LCD_LINE1_ADDR + LCD_CHAR_POSITION_3);
     lcd_write_string("Part 2 Done.");
@@ -134,9 +137,28 @@ void run_lab6_part3()
 
     uint8_t timer_count = 100;
     uint8_t timer_stop  = 0;
-    for(timer_count; timer_count >= timer_stop; timer_count--)
+    bool counting = 1;
+    lcd_set_ddram_addr(LCD_LINE1_ADDR + LCD_CHAR_POSITION_3);
+    while(counting)
     {
         lcd_clear();
-        lcd_set_ddram_addr(LCD_LINE1_ADDR + LCD_CHAR_POSITION_3);
+        lcd_write_byte(timer_count);
+        if(is_pb_down(PB1_IDX))
+        {
+            msec_delay(Debounce);
+            timer_count = 100;
+        }
+        if(is_pb_down(PB2_IDX))
+        {
+        msec_delay(Debounce);
+            counting = 0;
+        }
+        if(timer_count == timer_stop)
+        {
+            counting = 0;
+        }
     }
+
+    lcd_set_ddram_addr(LCD_LINE1_ADDR);
+    lcd_write_string("Part 3 Done.");
 }
