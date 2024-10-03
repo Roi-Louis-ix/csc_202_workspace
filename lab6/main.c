@@ -35,6 +35,7 @@
 void run_lab6_part1();
 void run_lab6_part2();
 void run_lab6_part3();
+void run_lab6_part4();
 
 //-----------------------------------------------------------------------------
 // Define symbolic constants used by the program
