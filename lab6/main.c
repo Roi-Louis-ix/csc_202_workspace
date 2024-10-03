@@ -18,6 +18,7 @@
 //-----------------------------------------------------------------------------
 // Loads standard C include files
 //-----------------------------------------------------------------------------
+#include <stdint.h>
 #include <stdio.h>
 
 //-----------------------------------------------------------------------------
@@ -36,15 +37,18 @@ void run_lab6_part1();
 void run_lab6_part2();
 void run_lab6_part3();
 void run_lab6_part4();
+<<<<<<< HEAD
 
+=======
+>>>>>>> e807cecaad076096c9740e6d7f689c10ff99f295
 //-----------------------------------------------------------------------------
 // Define symbolic constants used by the program
 //-----------------------------------------------------------------------------
 #define A_Byte              (0x41)  //Corresponding ASCII code for the letter A
-#define P1_Letter_Length    (500) //Length to display each letter in ms
-#define End_Of_Line1        (0x0F) //Value at which to change DDRAM addr to 40
-#define Running_Part        (1000) //Time to display "RUNNING PART 2" in ms
+#define P1_Letter_Length    (500)   //Length to display each letter in ms
+#define Running_Part        (1000)  //Time to display "RUNNING PART 2" in ms
 #define Debounce            (20)
+#define Count_Down          (200)   //Countdown time in ms 
 
 
 //-----------------------------------------------------------------------------
@@ -64,14 +68,30 @@ int main(void)
     lcd1602_init();
     lcd_set_display_on();
     lcd_clear();
+    keypad_init();
 
     dipsw_init();
 
-    //run_lab6_part1();
-    //run_lab6_part2();
+    run_lab6_part1();
+    run_lab6_part2();
     run_lab6_part3();
+    run_lab6_part4();
 } /* main */
 
+//-----------------------------------------------------------------------------
+// DESCRIPTION:
+// This function displays the alphabet on the LCD display.
+//  
+//  
+// INPUT PARAMETERS:
+// none
+//
+// OUTPUT PARAMETERS:
+//  none
+//
+// RETURN:
+// none
+// -----------------------------------------------------------------------------
 void run_lab6_part1()
 {
     uint8_t loop_count = 0;
@@ -90,6 +110,22 @@ void run_lab6_part1()
     }
 }
 
+//-----------------------------------------------------------------------------
+// DESCRIPTION:
+// This function displays numbers on the LCD and uses PB1 to switch between
+// numbers. The first number is displayed on row 1, the second on row 2,
+// and the third on row 1 after the first and second are cleared.
+//  
+//  
+// INPUT PARAMETERS:
+// none
+//
+// OUTPUT PARAMETERS:
+//  none
+//
+// RETURN:
+// none
+// -----------------------------------------------------------------------------
 void run_lab6_part2()
 {
     uint32_t top_num = 1234567890;
@@ -139,26 +175,29 @@ void run_lab6_part3()
     uint8_t timer_count = 100;
     uint8_t timer_stop  = 0;
     bool counting = 1;
-    lcd_set_ddram_addr(LCD_LINE1_ADDR + LCD_CHAR_POSITION_3);
+    lcd_clear();
+    
     while(counting)
     {
-        lcd_clear();
+       lcd_set_ddram_addr(LCD_LINE1_ADDR + LCD_CHAR_POSITION_7);
         if(is_pb_down(PB2_IDX))
         {
             msec_delay(Debounce);
             counting = 0;
         }
+        
+        lcd_write_byte(timer_count);
         if(timer_count == timer_stop)
         {
-            counting = 0;
+            timer_count = 101;
         }
-        lcd_write_byte(timer_count);
         if(is_pb_down(PB1_IDX))
         {
             msec_delay(Debounce);
-            timer_count = 100;
+            timer_count = 101;
         }
-        
+        timer_count--;
+        msec_delay(Count_Down);
     }
 
     lcd_set_ddram_addr(LCD_LINE1_ADDR);
@@ -174,31 +213,37 @@ void run_lab6_part4()
     lcd_clear();
     lcd_write_string("Running Part 4");
     msec_delay(Running_Part);
+    lcd_clear();
 
     uint8_t pressed_key = 0;
     bool running = 1;
-    uint8_t addr = LCD_LINE1_ADDR;
+    uint8_t key_count = 0;
     while(running)
     {
-        lcd_set_ddram_addr(addr);
         pressed_key = keypad_scan();
-        lcd_write_byte(pressed_key);
-        addr++;
-
-        if(addr > LCD_LINE1_ADDR + LCD_CHAR_POSITION_16)
+        if(pressed_key != NO_KEY_PRESSED)
         {
-            addr = LCD_LINE2_ADDR;
+            if(key_count == CHARACTERS_PER_LCD_LINE)
+            {
+                lcd_set_ddram_addr(LCD_LINE2_ADDR);
+            }
+            else if(key_count == TOTAL_CHARACTERS_PER_LCD)
+            {
+                lcd_clear();
+                lcd_set_ddram_addr(LCD_LINE1_ADDR);
+                key_count = 0;
+            }
+            hex_to_lcd(pressed_key);
+            wait_no_key_pressed();
+            key_count++;
         }
-        if(addr > LCD_LINE2_ADDR + LCD_CHAR_POSITION_16)
-        {
-            lcd_clear();
-            addr = LCD_LINE1_ADDR;
-        }
+        
         while(is_pb_down(PB1_IDX))
         {
             msec_delay(Debounce);
             lcd_clear();
-            addr = LCD_LINE1_ADDR;
+            lcd_set_ddram_addr(LCD_LINE1_ADDR);
+            key_count = 0;
         }
         while(is_pb_down(PB2_IDX))
         {
@@ -207,4 +252,6 @@ void run_lab6_part4()
             running = 0;
         }
     }
+    lcd_set_ddram_addr(LCD_LINE1_ADDR);
+    lcd_write_string("Program Completed.");
 }
