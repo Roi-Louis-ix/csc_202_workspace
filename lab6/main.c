@@ -1,16 +1,17 @@
 //*****************************************************************************
 //*****************************    C Source Code    ***************************
 //*****************************************************************************
-//  DESIGNER NAME:  TBD
+//  DESIGNER NAME:  Matthew Barry
 //
-//       LAB NAME:  TBD
+//       LAB NAME:  Lab 6: Interfacing with the LCD
 //
 //      FILE NAME:  main.c
 //
 //-----------------------------------------------------------------------------
 //
 // DESCRIPTION:
-//    This program serves as a ... 
+//    This program serves as an interface between the LaunchPad, push buttons,
+//    keypad, and LCD.
 //
 //*****************************************************************************
 //*****************************************************************************
@@ -48,13 +49,7 @@ void run_lab6_part4();
 #define Count_Down          (200) //Countdown time in ms 
 
 
-//-----------------------------------------------------------------------------
-// Define global variables and structures here.
-// NOTE: when possible avoid using global variables
-//-----------------------------------------------------------------------------
 
-
-// Define a structure to hold different data types
 
 int main(void)
 {
@@ -69,12 +64,30 @@ int main(void)
 
     dipsw_init();
 
-    run_lab6_part1();
-    run_lab6_part2();
-    run_lab6_part3();
-    run_lab6_part4();
+    //run_lab6_part1();
+    //run_lab6_part2();
+    //run_lab6_part3();
+    //run_lab6_part4();
+    char*  message = "WINNER";
+    lcd_set_ddram_addr(LCD_CHAR_POSITION_6);
+    lcd_write_string(message);
 } /* main */
 
+//-----------------------------------------------------------------------------
+// DESCRIPTION:
+// This function displays the entire alphabet on the LCD.
+// 
+//  
+//  
+// INPUT PARAMETERS:
+// none
+//
+// OUTPUT PARAMETERS:
+//  none
+//
+// RETURN:
+// none
+// -----------------------------------------------------------------------------
 void run_lab6_part1()
 {
     uint8_t loop_count = 0;
@@ -93,6 +106,24 @@ void run_lab6_part1()
     }
 }
 
+//-----------------------------------------------------------------------------
+// DESCRIPTION:
+// This function displays 3 numbers on the LCD. The first number comes on
+// automatically, then when PB1 is pressed, the second comes on under it, then
+// when PB1 is pressed again, both are cleared and the third number is 
+// displayed.
+// 
+//  
+//  
+// INPUT PARAMETERS:
+// none
+//
+// OUTPUT PARAMETERS:
+//  none
+//
+// RETURN:
+// none
+// -----------------------------------------------------------------------------
 void run_lab6_part2()
 {
     uint32_t top_num = 1234567890;
@@ -128,6 +159,23 @@ void run_lab6_part2()
     lcd_write_string("Part 2 Done.");
 }
 
+//-----------------------------------------------------------------------------
+// DESCRIPTION:
+// This function counts down from 100 every 200 ms. When the count reaches 0 or
+// PB1 is pressed, the counter resets to 100; pressing PB2 terminates the
+// program.
+// 
+//  
+//  
+// INPUT PARAMETERS:
+// none
+//
+// OUTPUT PARAMETERS:
+//  none
+//
+// RETURN:
+// none
+// -----------------------------------------------------------------------------
 void run_lab6_part3()
 {
     lcd_set_ddram_addr(LCD_LINE2_ADDR);
@@ -171,6 +219,22 @@ void run_lab6_part3()
     lcd_write_string("Part 3 Done.");
 }
 
+//-----------------------------------------------------------------------------
+// DESCRIPTION:
+// This function displays the keypad pressed on the LCD. When the entire
+// display is filled, it clears the display and restarts at line 1 column 1.
+// 
+//  
+//  
+// INPUT PARAMETERS:
+// none
+//
+// OUTPUT PARAMETERS:
+//  none
+//
+// RETURN:
+// none
+// -----------------------------------------------------------------------------
 void run_lab6_part4()
 {
     lcd_set_ddram_addr(LCD_LINE2_ADDR);
