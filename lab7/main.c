@@ -140,5 +140,10 @@ void run_lab7_part2()
 
 void lcd_string_parser(string, start_lcd_addr, max_lcd_addr)
 {
-
+    uint8_t addr;
+    for(addr = start_lcd_addr; addr >= max_lcd_addr; addr--)
+    {
+        lcd_set_ddram_addr(addr);
+        lcd_write_string(string);
+    }
 }
