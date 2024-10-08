@@ -38,15 +38,18 @@ void run_lab6_part1();
 void run_lab6_part2();
 void run_lab6_part3();
 void run_lab6_part4();
+<<<<<<< HEAD
+
+=======
+>>>>>>> e807cecaad076096c9740e6d7f689c10ff99f295
 //-----------------------------------------------------------------------------
 // Define symbolic constants used by the program
 //-----------------------------------------------------------------------------
 #define A_Byte              (0x41)  //Corresponding ASCII code for the letter A
-#define P1_Letter_Length    (500) //Length to display each letter in ms
-#define End_Of_Line1        (0x0F) //Value at which to change DDRAM addr to 40
-#define Running_Part        (1000) //Time to display "RUNNING PART 2" in ms
+#define P1_Letter_Length    (500)   //Length to display each letter in ms
+#define Running_Part        (1000)  //Time to display "RUNNING PART 2" in ms
 #define Debounce            (20)
-#define Count_Down          (200) //Countdown time in ms 
+#define Count_Down          (200)   //Countdown time in ms 
 
 
 
@@ -75,8 +78,12 @@ int main(void)
 
 //-----------------------------------------------------------------------------
 // DESCRIPTION:
+<<<<<<< HEAD
 // This function displays the entire alphabet on the LCD.
 // 
+=======
+// This function displays the alphabet on the LCD display.
+>>>>>>> ff9750081f9fcd494199c57e309d31511660b122
 //  
 //  
 // INPUT PARAMETERS:
@@ -108,11 +115,17 @@ void run_lab6_part1()
 
 //-----------------------------------------------------------------------------
 // DESCRIPTION:
+<<<<<<< HEAD
 // This function displays 3 numbers on the LCD. The first number comes on
 // automatically, then when PB1 is pressed, the second comes on under it, then
 // when PB1 is pressed again, both are cleared and the third number is 
 // displayed.
 // 
+=======
+// This function displays numbers on the LCD and uses PB1 to switch between
+// numbers. The first number is displayed on row 1, the second on row 2,
+// and the third on row 1 after the first and second are cleared.
+>>>>>>> ff9750081f9fcd494199c57e309d31511660b122
 //  
 //  
 // INPUT PARAMETERS:
