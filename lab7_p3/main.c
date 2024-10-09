@@ -47,7 +47,18 @@
 
 int main(void)
 {
- 
+    const int count_start = 0;
+    const int count_finish = 100;
+    uint8_t loop_count;
+    for(loop_count = 0; loop_count <= count_finish; loop_count++)
+    {
+        lcd_write_byte(loop_count);
+        loop_count++;
+        if(loop_count > count_finish)
+        {
+            loop_count = count_start;
+        }
+    }
 } /* main */
 
 void SysTick_Handler(void)
