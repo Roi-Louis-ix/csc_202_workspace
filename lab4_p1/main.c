@@ -204,7 +204,7 @@ void run_lab4_part3()
         for(countup_index = start_countup_loop; countup_index < end_countup_loop; countup_index++)
         {
             leds_on(countup_index);
-            msec_delay(P3_Delayelay);
+            msec_delay(P3_Delay);
             leds_off();
         }
         loop_count++;

@@ -80,8 +80,8 @@
 #define LED_BAR_LD7_IDX                                                      (7)
 
 // Defines for seven-segment display on CSC202 Expansion board
-#define SEG7_SEG_B_IDX                                                       (1)
 #define SEG7_SEG_A_IDX                                                       (0)
+#define SEG7_SEG_B_IDX                                                       (1)
 #define SEG7_SEG_C_IDX                                                       (2)
 #define SEG7_SEG_D_IDX                                                       (3)
 #define SEG7_SEG_E_IDX                                                       (4)

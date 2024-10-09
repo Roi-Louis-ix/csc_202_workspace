@@ -11,7 +11,11 @@
 //
 // DESCRIPTION:
 //    This program serves as an interface between the LaunchPad, push buttons,
+<<<<<<< HEAD
 //    and LCD. It has 4 parts.
+=======
+//    keypad, and LCD.
+>>>>>>> 8841f04a9368b89a4bf313e1ec382732a6f940e9
 //
 //*****************************************************************************
 //*****************************************************************************
@@ -52,13 +56,7 @@ void run_lab6_part4();
 #define Timer_Stop          (0)     //Stop countdown at 0 in Part 3
 
 
-//-----------------------------------------------------------------------------
-// Define global variables and structures here.
-// NOTE: when possible avoid using global variables
-//-----------------------------------------------------------------------------
 
-
-// Define a structure to hold different data types
 
 int main(void)
 {
@@ -73,15 +71,23 @@ int main(void)
 
     dipsw_init();
 
-    run_lab6_part1();
-    run_lab6_part2();
-    run_lab6_part3();
-    run_lab6_part4();
+    //run_lab6_part1();
+    //run_lab6_part2();
+    //run_lab6_part3();
+    //run_lab6_part4();
+    char*  message = "WINNER";
+    lcd_set_ddram_addr(LCD_CHAR_POSITION_6);
+    lcd_write_string(message);
 } /* main */
 
 //-----------------------------------------------------------------------------
 // DESCRIPTION:
+<<<<<<< HEAD
+// This function displays the entire alphabet on the LCD.
+// 
+=======
 // This function displays the alphabet on the LCD display.
+>>>>>>> ff9750081f9fcd494199c57e309d31511660b122
 //  
 //  
 // INPUT PARAMETERS:
@@ -113,9 +119,17 @@ void run_lab6_part1()
 
 //-----------------------------------------------------------------------------
 // DESCRIPTION:
+<<<<<<< HEAD
+// This function displays 3 numbers on the LCD. The first number comes on
+// automatically, then when PB1 is pressed, the second comes on under it, then
+// when PB1 is pressed again, both are cleared and the third number is 
+// displayed.
+// 
+=======
 // This function displays numbers on the LCD and uses PB1 to switch between
 // numbers. The first number is displayed on row 1, the second on row 2,
 // and the third on row 1 after the first and second are cleared.
+>>>>>>> ff9750081f9fcd494199c57e309d31511660b122
 //  
 //  
 // INPUT PARAMETERS:
@@ -164,9 +178,16 @@ void run_lab6_part2()
 
 //-----------------------------------------------------------------------------
 // DESCRIPTION:
+<<<<<<< HEAD
 // This function displays 100 in the center of the first row and counts down
 // every 200 ms. The timer resets to 100 if it reaches 0 or if PB1 is pressed,
 // and the program moves onto part 3 if PB2 is pressed.
+=======
+// This function counts down from 100 every 200 ms. When the count reaches 0 or
+// PB1 is pressed, the counter resets to 100; pressing PB2 terminates the
+// program.
+// 
+>>>>>>> 8841f04a9368b89a4bf313e1ec382732a6f940e9
 //  
 //  
 // INPUT PARAMETERS:
@@ -223,10 +244,16 @@ void run_lab6_part3()
 
 //-----------------------------------------------------------------------------
 // DESCRIPTION:
+<<<<<<< HEAD
 // This function displays the hex digit corresponding to any pressed keypad
 // character on the LCD. At the end of Line 2, the LCD automatically clears
 // and the program writes to Line 1 Column 1. If PB2 is pressed, the program
 // is terminated and "Program Completed" is displayed.
+=======
+// This function displays the keypad pressed on the LCD. When the entire
+// display is filled, it clears the display and restarts at line 1 column 1.
+// 
+>>>>>>> 8841f04a9368b89a4bf313e1ec382732a6f940e9
 //  
 //  
 // INPUT PARAMETERS:

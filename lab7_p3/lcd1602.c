@@ -411,8 +411,8 @@ void byte_to_ascii(uint8_t byte, char* string)
     } /* else */
   } /* for */
   
-
 } /* byte_to_ascii */
+
 
 // -----------------------------------------------------------------------------
 // DESCRIPTION
