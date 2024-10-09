@@ -48,9 +48,10 @@
 int main(void)
 {
  
- 
- // Endless loop to prevent program from ending
- while (1);
-
 } /* main */
 
+void SysTick_Handler(void)
+{
+    uint8_t switches_on = dipsw_read();
+    seg7_hex(SEG7_DIG0_ENABLE_IDX, switches_on);
+}
