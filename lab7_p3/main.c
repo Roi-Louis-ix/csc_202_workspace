@@ -19,22 +19,28 @@
 // Loads standard C include files
 //-----------------------------------------------------------------------------
 #include <stdio.h>
+#include <stdint.h>
 
 //-----------------------------------------------------------------------------
 // Loads MSP launchpad board support macros and definitions
 //-----------------------------------------------------------------------------
 #include <ti/devices/msp/msp.h>
 #include "clock.h"
-
+#include "LaunchPad.h"
+#include "lcd1602.h"
 
 //-----------------------------------------------------------------------------
 // Define function prototypes used by the program
 //-----------------------------------------------------------------------------
-
+void run_lab7_part3();
 
 //-----------------------------------------------------------------------------
 // Define symbolic constants used by the program
 //-----------------------------------------------------------------------------
+#define MSPM0_CLOCK_FREQUENCY                                           (40E6)
+#define SYST_TICK_PERIOD                                            (10.25E-3)
+#define SYST_TICK_PERIOD_COUNT      (SYST_TICK_PERIOD * MSPM0_CLOCK_FREQUENCY)
+#define CNTR_TIME                                                        (200)
 
 
 //-----------------------------------------------------------------------------
@@ -47,20 +53,37 @@
 
 int main(void)
 {
+    I2C_init();
+    clock_init_40mhz();
+    launchpad_gpio_init();
+    lcd1602_init();
+    seg7_init();
+    lcd_clear();
+    led_disable();
+    dipsw_init();
+    sys_tick_init(SYST_TICK_PERIOD_COUNT);
+    
+    run_lab7_part3();
+} /* main */
+
+void run_lab7_part3()
+{
     const int count_start = 0;
     const int count_finish = 100;
     uint8_t loop_count;
-    for(loop_count = 0; loop_count <= count_finish; loop_count++)
+    
+    
+    for(loop_count = count_start; loop_count <= count_finish; loop_count++)
     {
+        lcd_set_ddram_addr(LCD_CHAR_POSITION_7);
         lcd_write_byte(loop_count);
-        loop_count++;
-        if(loop_count > count_finish)
+        if(loop_count == count_finish)
         {
             loop_count = count_start;
         }
+        msec_delay(CNTR_TIME);
     }
-} /* main */
-
+}
 void SysTick_Handler(void)
 {
     uint8_t switches_on = dipsw_read();
