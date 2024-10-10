@@ -45,6 +45,7 @@ void lcd_string_parser(char string[], uint8_t start_lcd_addr, uint8_t max_lcd_ad
 #define SYST_TICK_PERIOD                                            (10.25E-3)
 #define SYST_TICK_PERIOD_COUNT      (SYST_TICK_PERIOD * MSPM0_CLOCK_FREQUENCY)
 #define RUNNING_PART                                                    (1000)
+#define DEBOUNCE                                                          (80)
 
 //-----------------------------------------------------------------------------
 // Define global variables and structures here.
@@ -79,7 +80,6 @@ int main(void)
     led_init();
     led_disable();
     seg7_init();
-    sys_tick_init(SYST_TICK_PERIOD_COUNT);
 
 
     run_lab7_part1();
@@ -112,24 +112,27 @@ void run_lab7_part1()
     bool Done = 0;
     char msg[] = "Microcontrollers are fun.";
     int addr;
+    sys_tick_init(SYST_TICK_PERIOD_COUNT);
+    
     while(!Done)
     {
-        for(addr = LCD_LINE2_ADDR + LCD_CHAR_POSITION_16; addr >= LCD_LINE2_ADDR; addr--)
+        for(addr = LCD_LINE2_ADDR + LCD_CHAR_POSITION_16; addr >= LCD_LINE2_ADDR && !Done; addr--)
         {
             lcd_set_ddram_addr(addr);
             lcd_write_string(msg);
             if(is_pb_down(PB2_IDX))
             {
+                msec_delay(DEBOUNCE);
                 addr = LCD_LINE2_ADDR;
-                lcd_clear();
             }
         }
         if(is_pb_down(PB2_IDX))
         {
+            msec_delay(DEBOUNCE);
             Done = true;
         }
         uint8_t msg_idx = 0;
-        while(msg[msg_idx] != '\0')
+        while(msg[msg_idx] != '\0' && !Done)
         {
             
             lcd_set_ddram_addr(LCD_LINE2_ADDR);
@@ -138,18 +141,26 @@ void run_lab7_part1()
             lcd_clear();
             if(is_pb_down(PB2_IDX))
             {
+                msec_delay(DEBOUNCE);
                 lcd_clear();
                 Done = 1;
             }
         }
         
     }
+    sys_tick_disable();
+    lcd_clear();
+    lcd_set_ddram_addr(LCD_LINE1_ADDR);
+    lcd_write_string("Part 1 done");
+    msec_delay(RUNNING_PART);
 }
 
 void run_lab7_part2()
 {
+    lcd_clear();
     lcd_write_string("Press PB2");
     while(is_pb_up(PB2_IDX)) {}
+    sys_tick_init(SYST_TICK_PERIOD_COUNT);
     lcd_clear();
     lcd_write_string("Running Part 2");
     msec_delay(RUNNING_PART);
@@ -159,7 +170,7 @@ void run_lab7_part2()
     int addr;
     while(!Done)
     {
-        for(addr = LCD_LINE2_ADDR + LCD_CHAR_POSITION_16; addr >= LCD_LINE2_ADDR; addr--)
+        for(addr = LCD_LINE2_ADDR + LCD_CHAR_POSITION_16; addr >= LCD_LINE2_ADDR && !Done; addr--)
         {
             lcd_set_ddram_addr(addr);
             char msg[] = "Microcontrollers are fun. I love programming in MSPM0+ assembly code!!!";
@@ -167,12 +178,13 @@ void run_lab7_part2()
             msec_delay(20);
             if(is_pb_down(PB2_IDX))
             {
+                msec_delay(DEBOUNCE);
                 lcd_clear();
                 Done = 1;
             }
         }
         uint16_t msg_idx = 0;
-        while(msg[msg_idx] != '\0')
+        while(msg[msg_idx] != '\0' && !Done)
         {
             
             lcd_set_ddram_addr(LCD_LINE2_ADDR);
@@ -182,6 +194,7 @@ void run_lab7_part2()
             lcd_clear();
             if(is_pb_down(PB2_IDX))
             {
+                msec_delay(DEBOUNCE);
                 lcd_clear();
                 Done = 1;
             }
@@ -189,6 +202,10 @@ void run_lab7_part2()
         }
         addr = LCD_LINE2_ADDR + LCD_CHAR_POSITION_16;
     }
+    sys_tick_disable();
+    lcd_clear();
+    lcd_write_string("Part 2 done");
+    msec_delay(RUNNING_PART);
 }
 
 void lcd_string_parser(char string[], uint8_t start_lcd_addr, uint8_t max_lcd_addr)

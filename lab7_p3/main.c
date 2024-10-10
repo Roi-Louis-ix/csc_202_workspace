@@ -48,7 +48,6 @@ void run_lab7_part3();
 // NOTE: when possible avoid using global variables
 //-----------------------------------------------------------------------------
 
-
 // Define a structure to hold different data types
 
 int main(void)
@@ -72,20 +71,35 @@ void run_lab7_part3()
     const int count_finish = 100;
     uint8_t loop_count;
     
-    
-    for(loop_count = count_start; loop_count <= count_finish; loop_count++)
+    while(true)
     {
-        lcd_set_ddram_addr(LCD_CHAR_POSITION_7);
-        lcd_write_byte(loop_count);
-        if(loop_count == count_finish)
+        
+        for(loop_count = count_start; loop_count < count_finish; loop_count++)
         {
-            loop_count = count_start;
+            lcd_set_ddram_addr(LCD_CHAR_POSITION_7);
+            lcd_write_byte(loop_count);
+            if(loop_count == count_finish)
+            {
+                loop_count = count_start;
+            }
+            msec_delay(CNTR_TIME);
         }
-        msec_delay(CNTR_TIME);
     }
 }
 void SysTick_Handler(void)
 {
+    uint8_t switch_value = 0;
+    uint8_t dip_value = 0;
+
     uint8_t switches_on = dipsw_read();
-    seg7_hex(SEG7_DIG0_ENABLE_IDX, switches_on);
+    uint8_t display_value = 0;
+    for(uint8_t loop_count = 0; loop_count < 4; loop_count++)
+    {
+        if((switches_on & (1 << loop_count)) == (1 << loop_count))
+        {
+            display_value++;
+        }
+    }
+
+    seg7_hex(display_value, SEG7_DIG0_ENABLE_IDX);
 }

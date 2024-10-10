@@ -45,6 +45,7 @@ void config_pb2_interrupt();
 // Define symbolic constants used by the program
 //-----------------------------------------------------------------------------
 #define COUNTER_TIME            (200)
+#define DEBOUNCE                 (80)
 
 //-----------------------------------------------------------------------------
 // Define global variables and structures here.
@@ -61,13 +62,15 @@ int main(void)
     lcd1602_init();
     launchpad_gpio_init();
     dipsw_init();
+    led_init();
+    led_enable();
 
     config_pb1_interrupt();
     config_pb2_interrupt();
     
     run_lab7_part4();
     
-
+    while(true);
 } /* main */
 
 void run_lab7_part4(void)
@@ -77,14 +80,15 @@ void run_lab7_part4(void)
     {
         uint8_t loop_stop = 100;
         uint8_t loop_start  = 0;
-        uint8_t loop_count = loop_start;
-        for(loop_count; loop_count <= loop_stop; loop_count++)
+        for(uint8_t loop_count = loop_start; loop_count < loop_stop && !g_PB1_pressed; loop_count++)
         {
-            lcd_set_ddram_addr(LCD_CHAR_POSITION_8);
+            lcd_set_ddram_addr(LCD_CHAR_POSITION_7);
             lcd_write_byte(loop_count);
+            leds_on(loop_count);
             msec_delay(COUNTER_TIME);
             if(g_PB2_pressed)
             {
+                msec_delay(DEBOUNCE);
                 if(display)
                 {
                     lcd_clear();
@@ -100,10 +104,6 @@ void run_lab7_part4(void)
                     display = true;
                 }
             }
-            if(g_PB1_pressed)
-            {
-                
-            }
         }
         
     
@@ -111,6 +111,7 @@ void run_lab7_part4(void)
     lcd_clear();
     lcd_set_ddram_addr(LCD_LINE1_ADDR);
     lcd_write_string("Program Stopped");
+    leds_off();
 }
 void GROUP1_IRQHandler(void)
 {
