@@ -1,0 +1,65 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "lab3_p1",
+            "type": "ccs-debug",
+            "request": "launch",
+            "project": "lab3_p1"
+        },
+        {
+            "name": "lab3_p2",
+            "type": "ccs-debug",
+            "request": "launch",
+            "project": "lab3_p2"
+        },
+        {
+            "name": "lab4_p1",
+            "type": "ccs-debug",
+            "request": "launch",
+            "project": "lab4_p1"
+        },
+        {
+            "name": "lab5",
+            "type": "ccs-debug",
+            "request": "launch",
+            "project": "lab5"
+        },
+        {
+            "name": "lab6",
+            "type": "ccs-debug",
+            "request": "launch",
+            "project": "lab6"
+        },
+        {
+            "name": "lab7",
+            "type": "ccs-debug",
+            "request": "launch",
+            "project": "lab7"
+        },
+        {
+            "name": "lab7_p3",
+            "type": "ccs-debug",
+            "request": "launch",
+            "project": "lab7_p3"
+        },
+        {
+            "name": "lab7_p4",
+            "type": "ccs-debug",
+            "request": "launch",
+            "project": "lab7_p4"
+        },
+        {
+            "name": "lab7_p1_2",
+            "type": "ccs-debug",
+            "request": "launch",
+            "project": "lab7_p1_2"
+        },
+        {
+            "name": "lab8_p1",
+            "type": "ccs-debug",
+            "request": "launch",
+            "project": "lab8_p1"
+        }
+    ]
+}
