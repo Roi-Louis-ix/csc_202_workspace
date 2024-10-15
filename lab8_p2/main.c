@@ -1,17 +1,16 @@
 //*****************************************************************************
 //*****************************    C Source Code    ***************************
 //*****************************************************************************
-//  DESIGNER NAME:  Matthew Barry
+//  DESIGNER NAME:  TBD
 //
-//       LAB NAME:  7 Part 4: the Hummdinger
+//       LAB NAME:  TBD
 //
 //      FILE NAME:  main.c
 //
 //-----------------------------------------------------------------------------
 //
 // DESCRIPTION:
-//    This program configures and runs interrupts for both pushbuttons. It 
-//    runs a counter on the LCD and LEDs whilst indicating if a PB is pressed.
+//    This program serves as a ... 
 //
 //*****************************************************************************
 //*****************************************************************************
@@ -22,39 +21,35 @@
 #include <stdio.h>
 #include <stdint.h>
 
-
 //-----------------------------------------------------------------------------
 // Loads MSP launchpad board support macros and definitions
 //-----------------------------------------------------------------------------
 #include <ti/devices/msp/msp.h>
 #include "clock.h"
 #include "LaunchPad.h"
-#include "lcd1602.h"
 #include "adc.h"
+#include "lcd1602.h"
 #include "ti/devices/msp/m0p/mspm0g350x.h"
-#include "ti/devices/msp/peripherals/hw_adc12.h"
 #include "ti/devices/msp/peripherals/hw_gpio.h"
-#include "ti/devices/msp/peripherals/hw_vref.h"
 #include "ti/devices/msp/peripherals/m0p/hw_cpuss.h"
-#include <ti/devices/msp/peripherals/hw_vref.h>
 
 //-----------------------------------------------------------------------------
 // Define function prototypes used by the program
 //-----------------------------------------------------------------------------
-void run_lab8_p1();
+void run_lab8_p2();
 void GROUP1_IRQHandler();
 void config_pb1_interrupt();
 void config_pb2_interrupt();
 void OPA0_init();
 
+
 //-----------------------------------------------------------------------------
 // Define symbolic constants used by the program
 //-----------------------------------------------------------------------------
-#define COUNTER_TIME            (200)
-#define DEBOUNCE                 (80)
-#define LIGHT_DARK_THRESHOLD     (34)
-#define DELAY_TIME               (80)
-#define CHANNEL                   (7)
+#define NUM_STATES              (9)
+#define ADC_RANGE            (4096)
+#define STATE_RANGE           (455)
+#define CHANNEL                 (7)
 
 //-----------------------------------------------------------------------------
 // Define global variables and structures here.
@@ -68,80 +63,44 @@ bool g_PB2_pressed;
 int main(void)
 {
     clock_init_40mhz();
-    I2C_init();
-    lcd1602_init();
     launchpad_gpio_init();
     dipsw_init();
     led_init();
     led_enable();
-    OPA0_init();
-    ADC0_init(ADC12_MEMCTL_VRSEL_VDDA_VSSA);
+
+    I2C_init();
+    lcd1602_init();
 
     config_pb1_interrupt();
     config_pb2_interrupt();
-    
-    run_lab8_p1();
-    
-    leds_off();
+
+    ADC0_init(ADC12_MEMCTL_VRSEL_VDDA_VSSA);
+    lcd_clear();
+    run_lab8_p2();
+
     char msg[] = "Program Stopped";
     lcd_clear();
     lcd_set_ddram_addr(LCD_LINE1_ADDR);
     lcd_write_string(msg);
-
-
 } /* main */
 
-//-----------------------------------------------------------------------------
-// DESCRIPTION:
-// This function counts from 0 to 99 and displays the count on the LCD and the
-// binary value on the LEDs.
-//  
-// INPUT PARAMETERS:
-// none
-//
-// OUTPUT PARAMETERS:
-//  none
-//
-// RETURN:
-// none
-// -----------------------------------------------------------------------------
-void run_lab8_p1(void)
+void run_lab8_p2()
 {
     while(!g_PB1_pressed)
     {
-        uint16_t ADC_val = ADC0_in(CHANNEL);
-        if(ADC_val >= LIGHT_DARK_THRESHOLD)
-        {
-            lcd_set_ddram_addr(LCD_LINE1_ADDR);
-            lcd_write_string("Status: Light");
-        }    
-        else 
-        {
-            lcd_set_ddram_addr(LCD_LINE1_ADDR);
-            lcd_write_string("Status: Dark ");
-        }
-
-        lcd_set_ddram_addr(LCD_LINE2_ADDR);
+        uint16_t pot_val = ADC0_in(CHANNEL);
+        lcd_set_ddram_addr(LCD_LINE1_ADDR);
         lcd_write_string("ADC = ");
-        lcd_write_doublebyte(ADC_val);
-        
-        msec_delay(DELAY_TIME);
+        lcd_write_doublebyte(pot_val);
+
+        leds_off();
+        for(uint16_t led_idx = 0; led_idx < (pot_val / STATE_RANGE); led_idx++)
+        {
+            led_on(led_idx);
+        }
     }
 }
 
-//-----------------------------------------------------------------------------
-// DESCRIPTION:
-// This function programs an ISR for pushbuttons 1 and 2, on bits 15 and 18.
-//  
-// INPUT PARAMETERS:
-// none
-//
-// OUTPUT PARAMETERS:
-//  none
-//
-// RETURN:
-// none
-// -----------------------------------------------------------------------------
 void GROUP1_IRQHandler(void)
 {
 
@@ -234,24 +193,3 @@ void config_pb2_interrupt(void)
 }
 
 
-void OPA0_init(void)
-{
-    OPA0->GPRCM.RSTCTL = (OA_RSTCTL_KEY_UNLOCK_W | OA_RSTCTL_RESETSTKYCLR_CLR |
-                          OA_RSTCTL_RESETASSERT_ASSERT);
-
-    OPA0->GPRCM.PWREN = (OA_PWREN_KEY_UNLOCK_W | OA_PWREN_ENABLE_ENABLE);
-
-    // time for OPA to power up
-    clock_delay(24);
-
-    OPA0->CFGBASE &= ~(OA_CFGBASE_RRI_MASK);
-
-    OPA0->CFGBASE |= ((uint32_t) OA_CFGBASE_GBW_HIGHGAIN);
-
-    OPA0->CFG |= (OA_CFG_GAIN_MINIMUM | OA_CFG_MSEL_NC | OA_CFG_NSEL_EXTPIN0 |
-                  OA_CFG_PSEL_EXTPIN0 | OA_CFG_OUTPIN_ENABLED |
-                  OA_CFG_CHOP_OFF);
-
-    OPA0->CTL |= OA_CTL_ENABLE_ON;
-
-}
