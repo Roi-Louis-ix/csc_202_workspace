@@ -48,7 +48,7 @@ void OPA0_init();
 //-----------------------------------------------------------------------------
 #define COUNTER_TIME            (200)
 #define DEBOUNCE                 (80)
-#define LIGHT_DARK_THRESHOLD    (100)
+#define LIGHT_DARK_THRESHOLD     (30)
 #define DELAY_TIME               (80)
 #define CHANNEL                   (7)
 
@@ -70,13 +70,16 @@ int main(void)
     led_init();
     led_enable();
     OPA0_init();
+    ADC0_init();
 
     config_pb1_interrupt();
     config_pb2_interrupt();
     
     run_lab8_p1();
     
-    while(true);
+    lcd_clear();
+    lcd_set_ddram_addr(LCD_LINE1_ADDR);
+    lcd_write_string("Program stopped");
 } /* main */
 
 //-----------------------------------------------------------------------------
