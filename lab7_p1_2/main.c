@@ -46,6 +46,7 @@ void lcd_string_parser(char string[], uint8_t start_lcd_addr, uint8_t max_lcd_ad
 #define SYST_TICK_PERIOD_COUNT      (SYST_TICK_PERIOD * MSPM0_CLOCK_FREQUENCY)
 #define RUNNING_PART                                                    (1000)
 #define DEBOUNCE                                                          (80)
+#define LCD_DELAY                                                        (100)
 
 //-----------------------------------------------------------------------------
 // Define global variables and structures here.
@@ -120,10 +121,12 @@ void run_lab7_part1()
         {
             lcd_set_ddram_addr(addr);
             lcd_write_string(msg);
+            msec_delay(LCD_DELAY);
             if(is_pb_down(PB2_IDX))
             {
                 msec_delay(DEBOUNCE);
                 addr = LCD_LINE2_ADDR;
+                Done = true;
             }
         }
         if(is_pb_down(PB2_IDX))
@@ -138,7 +141,7 @@ void run_lab7_part1()
             lcd_set_ddram_addr(LCD_LINE2_ADDR);
             lcd_write_string(msg + msg_idx);
             msg_idx++;
-            lcd_clear();
+            msec_delay(LCD_DELAY);
             if(is_pb_down(PB2_IDX))
             {
                 msec_delay(DEBOUNCE);
@@ -175,7 +178,7 @@ void run_lab7_part2()
             lcd_set_ddram_addr(addr);
             char msg[] = "Microcontrollers are fun. I love programming in MSPM0+ assembly code!!!";
             lcd_string_parser(msg, addr, LCD_LINE2_ADDR + LCD_CHAR_POSITION_16);
-            msec_delay(20);
+            msec_delay(LCD_DELAY);
             if(is_pb_down(PB2_IDX))
             {
                 msec_delay(DEBOUNCE);
@@ -190,8 +193,7 @@ void run_lab7_part2()
             lcd_set_ddram_addr(LCD_LINE2_ADDR);
             char msg[] = "Microcontrollers are fun. I love programming in MSPM0+ assembly code!!!";
             lcd_string_parser(msg + msg_idx, LCD_LINE2_ADDR, LCD_LINE2_ADDR + LCD_CHAR_POSITION_16);
-            
-            lcd_clear();
+            msec_delay(LCD_DELAY);
             if(is_pb_down(PB2_IDX))
             {
                 msec_delay(DEBOUNCE);
@@ -211,11 +213,9 @@ void run_lab7_part2()
 void lcd_string_parser(char string[], uint8_t start_lcd_addr, uint8_t max_lcd_addr)
 {
     lcd_set_ddram_addr(start_lcd_addr);
-    if(max_lcd_addr - start_lcd_addr < strlen(string))
+    if(string[max_lcd_addr - start_lcd_addr] != '\0')
     {
         string[max_lcd_addr - start_lcd_addr + 1] = '\0'; //Terminates the string
     }
-    
     lcd_write_string(string);
 }
-
