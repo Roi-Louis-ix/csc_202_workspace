@@ -10,7 +10,7 @@
 //-----------------------------------------------------------------------------
 //
 // DESCRIPTION:
-//    This program serves as a ... 
+//    This program serves as a way to control a DC motor with software.
 //
 //*****************************************************************************
 //*****************************************************************************
@@ -26,6 +26,11 @@
 #include <ti/devices/msp/msp.h>
 #include "LaunchPad.h"
 #include "clock.h"
+#include "adc.h"
+#include "lcd1602.h"
+#include "ti/devices/msp/m0p/mspm0g350x.h"
+#include "ti/devices/msp/peripherals/hw_gpio.h"
+#include "ti/devices/msp/peripherals/m0p/hw_cpuss.h"
 
 
 //-----------------------------------------------------------------------------
@@ -77,7 +82,10 @@ void run_lab9_p1(void)
 
     motor_state = MOTOR_CCW;
 
-    
+    lcd_set_ddram_addr(LCD_CHAR_POSITION_3);
+    lcd_write_string("MOTOR SPEED");
+
+    lcd_set_ddram_addr(LCD_CHAR_POSITION_7);
     
     key_val = keypad_scan();
     while(!g_PB1_pressed)
@@ -86,6 +94,7 @@ void run_lab9_p1(void)
         {
             case(MOTOR_OFF1):
                 motor0_pwm_disable();
+                lcd_write_string("0%");
                 while(!g_PB2_pressed) {}
                 motor_state = MOTOR_CW;
                 g_PB2_pressed = false;
@@ -98,6 +107,8 @@ void run_lab9_p1(void)
                     motor0_set_pwm_dc(duty_cycle);
                     motor0_set_pwm_count(0);
                     motor0_pwm_enable();
+                    lcd_write_byte(duty_cycle);
+                    
                 }
                 motor_state = MOTOR_OFF2;
                 g_PB2_pressed = false;
